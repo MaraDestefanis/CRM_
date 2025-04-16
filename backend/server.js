@@ -1,14 +1,21 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
-const { Sequelize } = require('sequelize');
-const multer = require('multer');
-const xlsx = require('xlsx');
-const csv = require('csv-parser');
 const fs = require('fs');
 const path = require('path');
+
+const sequelize = require('./config/database');
+const models = require('./models');
+
+const authRoutes = require('./api/auth');
+const goalsRoutes = require('./api/goals');
+const clientsRoutes = require('./api/clients');
+const salesRoutes = require('./api/sales');
+const strategiesRoutes = require('./api/strategies');
+const tasksRoutes = require('./api/tasks');
+const commentsRoutes = require('./api/comments');
+
+const { auth, adminOnly, supervisorOrAdmin } = require('./middleware/auth');
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -17,11 +24,10 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const sequelize = new Sequelize({
-  dialect: 'sqlite',
-  storage: ':memory:',
-  logging: false
-});
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
 
 sequelize.authenticate()
   .then(() => {
@@ -31,53 +37,78 @@ sequelize.authenticate()
     console.error('Unable to connect to the database:', err);
   });
 
+sequelize.sync({ alter: true })
+  .then(() => {
+    console.log('Database synced successfully.');
+    
+    models.User.findOne({ where: { role: 'admin' } })
+      .then(admin => {
+        if (!admin) {
+          models.User.create({
+            name: 'Admin User',
+            email: 'admin@example.com',
+            password: 'admin123',
+            role: 'admin'
+          })
+            .then(() => console.log('Admin user created.'))
+            .catch(err => console.error('Error creating admin user:', err));
+        }
+      })
+      .catch(err => console.error('Error checking for admin user:', err));
+  })
+  .catch(err => {
+    console.error('Error syncing database:', err);
+  });
+
 app.get('/', (req, res) => {
   res.json({ message: 'Welcome to the CRM API' });
 });
 
-app.post('/api/auth/login', (req, res) => {
-  res.status(501).json({ message: 'Not implemented yet' });
+app.use('/api/auth', authRoutes);
+app.use('/api/goals', goalsRoutes);
+app.use('/api/clients', clientsRoutes);
+app.use('/api/sales', salesRoutes);
+app.use('/api/strategies', strategiesRoutes);
+app.use('/api/tasks', tasksRoutes);
+app.use('/api/comments', commentsRoutes);
+
+app.get('/api/users', auth, supervisorOrAdmin, async (req, res) => {
+  try {
+    const users = await models.User.findAll({
+      attributes: { exclude: ['password'] }
+    });
+    
+    res.json(users);
+  } catch (error) {
+    console.error('Get users error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
-app.post('/api/auth/register', (req, res) => {
-  res.status(501).json({ message: 'Not implemented yet' });
+app.get('/api/users/:id', auth, async (req, res) => {
+  try {
+    const user = await models.User.findByPk(req.params.id, {
+      attributes: { exclude: ['password'] }
+    });
+    
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    if (req.user.role === 'sales' && req.user.id !== user.id) {
+      return res.status(403).json({ message: 'Not authorized to view this user' });
+    }
+    
+    res.json(user);
+  } catch (error) {
+    console.error('Get user error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
-app.get('/api/users', (req, res) => {
-  res.status(501).json({ message: 'Not implemented yet' });
-});
-
-app.get('/api/goals', (req, res) => {
-  res.status(501).json({ message: 'Not implemented yet' });
-});
-
-app.post('/api/goals', (req, res) => {
-  res.status(501).json({ message: 'Not implemented yet' });
-});
-
-app.get('/api/sales', (req, res) => {
-  res.status(501).json({ message: 'Not implemented yet' });
-});
-
-app.post('/api/sales/import', (req, res) => {
-  res.status(501).json({ message: 'Not implemented yet' });
-});
-
-app.get('/api/strategies', (req, res) => {
-  res.status(501).json({ message: 'Not implemented yet' });
-});
-
-app.post('/api/strategies', (req, res) => {
-  res.status(501).json({ message: 'Not implemented yet' });
-});
-
-app.get('/api/tasks', (req, res) => {
-  res.status(501).json({ message: 'Not implemented yet' });
-});
-
-app.post('/api/tasks', (req, res) => {
-  res.status(501).json({ message: 'Not implemented yet' });
-});
+if (process.env.EMAIL_MONITORING_ENABLED === 'true') {
+  console.log('Email monitoring would be set up here if enabled.');
+}
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
