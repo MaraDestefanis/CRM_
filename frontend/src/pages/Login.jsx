@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Login = ({ onLogin }) => {
+  const navigate = useNavigate();
   const [credentials, setCredentials] = useState({
     email: '',
     password: ''
   });
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -13,13 +16,24 @@ const Login = ({ onLogin }) => {
       ...credentials,
       [name]: value
     });
+    if (error) setError('');
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const success = onLogin(credentials);
-    if (!success) {
-      setError('Invalid email or password');
+    setLoading(true);
+    
+    try {
+      const success = await onLogin(credentials);
+      if (success) {
+        navigate('/dashboard');
+      } else {
+        setError('Invalid email or password');
+      }
+    } catch (error) {
+      setError(error.message || 'Authentication failed. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -27,6 +41,7 @@ const Login = ({ onLogin }) => {
     <div className="login-container">
       <div className="login-form-container">
         <h1 className="login-title">CRM System</h1>
+        <p className="login-subtitle">Commercial Management System</p>
         <form className="login-form" onSubmit={handleSubmit}>
           {error && <div className="error-message">{error}</div>}
           <div className="form-group">
@@ -37,6 +52,7 @@ const Login = ({ onLogin }) => {
               name="email"
               value={credentials.email}
               onChange={handleChange}
+              disabled={loading}
               required
             />
           </div>
@@ -48,13 +64,22 @@ const Login = ({ onLogin }) => {
               name="password"
               value={credentials.password}
               onChange={handleChange}
+              disabled={loading}
               required
             />
           </div>
-          <button type="submit" className="login-button">
-            Login
+          <button 
+            type="submit" 
+            className="login-button"
+            disabled={loading}
+          >
+            {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>
+        <div className="login-info">
+          <p>Demo Credentials:</p>
+          <p>Admin: admin@example.com / admin123</p>
+        </div>
       </div>
     </div>
   );

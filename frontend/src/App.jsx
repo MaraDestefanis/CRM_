@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
 
@@ -9,22 +9,44 @@ import Analysis from './pages/Analysis';
 import Strategies from './pages/Strategies';
 import Tasks from './pages/Tasks';
 import Control from './pages/Control';
+
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 
+import authService from './services/authService';
+
+const ProtectedRoute = ({ children }) => {
+  if (!authService.isAuthenticated()) {
+    return <Navigate to="/login" replace />;
+  }
+  return children;
+};
+
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(authService.isAuthenticated());
+  const [user, setUser] = useState(authService.getCurrentUser());
   
-  const handleLogin = (credentials) => {
-    if (credentials.email && credentials.password) {
+  useEffect(() => {
+    setIsAuthenticated(authService.isAuthenticated());
+    setUser(authService.getCurrentUser());
+  }, []);
+  
+  const handleLogin = async (credentials) => {
+    try {
+      await authService.login(credentials.email, credentials.password);
       setIsAuthenticated(true);
+      setUser(authService.getCurrentUser());
       return true;
+    } catch (error) {
+      console.error('Login error:', error);
+      return false;
     }
-    return false;
   };
   
   const handleLogout = () => {
+    authService.logout();
     setIsAuthenticated(false);
+    setUser(null);
   };
 
   return (
@@ -32,17 +54,41 @@ function App() {
       <div className="app">
         {isAuthenticated && (
           <>
-            <Navbar onLogout={handleLogout} />
+            <Navbar user={user} onLogout={handleLogout} />
             <div className="content-wrapper">
               <Sidebar />
               <main className="main-content">
                 <Routes>
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/goals" element={<Goals />} />
-                  <Route path="/analysis" element={<Analysis />} />
-                  <Route path="/strategies" element={<Strategies />} />
-                  <Route path="/tasks" element={<Tasks />} />
-                  <Route path="/control" element={<Control />} />
+                  <Route path="/dashboard" element={
+                    <ProtectedRoute>
+                      <Dashboard />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/goals" element={
+                    <ProtectedRoute>
+                      <Goals />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/analysis" element={
+                    <ProtectedRoute>
+                      <Analysis />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/strategies" element={
+                    <ProtectedRoute>
+                      <Strategies />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/tasks" element={
+                    <ProtectedRoute>
+                      <Tasks />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/control" element={
+                    <ProtectedRoute>
+                      <Control />
+                    </ProtectedRoute>
+                  } />
                   <Route path="*" element={<Navigate to="/dashboard" replace />} />
                 </Routes>
               </main>
