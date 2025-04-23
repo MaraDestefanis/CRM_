@@ -157,3 +157,5 @@ Importación de Datos desde ERP: Framework para monitoreo de correos e importaci
 Generación Automática de Tareas: Para tareas recurrentes y nuevas estrategias.
 Relaciones entre Entidades: Relaciones correctas entre todos los modelos y sus dependencias.
 
+
+This is a dummy change for testing purposes.
