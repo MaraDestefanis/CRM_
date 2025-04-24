@@ -1,0 +1,10 @@
+# Standalone Netlify configuration for frontend-only deployment
+[build]
+  publish = "frontend/netlify"
+  command = ""
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  force = true
