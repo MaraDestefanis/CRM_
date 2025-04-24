@@ -1,5 +1,6 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
+return (sequelize) => {
+  const { DataTypes } = require('sequelize');
+
 
 const Comment = sequelize.define('Comment', {
   id: {
@@ -21,4 +22,6 @@ const Comment = sequelize.define('Comment', {
   }
 });
 
-module.exports = Comment;
+return Comment;
+};
+

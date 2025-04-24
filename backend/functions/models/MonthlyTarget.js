@@ -1,5 +1,6 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
+return (sequelize) => {
+  const { DataTypes } = require('sequelize');
+
 
 const MonthlyTarget = sequelize.define('MonthlyTarget', {
   id: {
@@ -33,4 +34,6 @@ const MonthlyTarget = sequelize.define('MonthlyTarget', {
   }
 });
 
-module.exports = MonthlyTarget;
+return MonthlyTarget;
+};
+

@@ -1,5 +1,6 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
+return (sequelize) => {
+  const { DataTypes } = require('sequelize');
+
 
 const Strategy = sequelize.define('Strategy', {
   id: {
@@ -32,4 +33,6 @@ const Strategy = sequelize.define('Strategy', {
   }
 });
 
-module.exports = Strategy;
+return Strategy;
+};
+

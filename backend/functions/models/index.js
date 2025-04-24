@@ -1,4 +1,5 @@
-const sequelize = require('../config/database');
+return (sequelize) => {
+  
 const User = require('./User');
 const Client = require('./Client');
 const Goal = require('./Goal');
@@ -37,7 +38,7 @@ Task.belongsTo(Strategy, { foreignKey: 'strategyId' });
 Client.hasMany(Task, { foreignKey: 'clientId' });
 Task.belongsTo(Client, { foreignKey: 'clientId' });
 
-module.exports = {
+return {
   sequelize,
   User,
   Client,
@@ -47,3 +48,5 @@ module.exports = {
   Strategy,
   Task
 };
+};
+

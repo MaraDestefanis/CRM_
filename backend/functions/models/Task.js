@@ -1,5 +1,6 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
+return (sequelize) => {
+  const { DataTypes } = require('sequelize');
+
 
 const Task = sequelize.define('Task', {
   id: {
@@ -43,4 +44,6 @@ const Task = sequelize.define('Task', {
   }
 });
 
-module.exports = Task;
+return Task;
+};
+

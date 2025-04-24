@@ -1,5 +1,6 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
+return (sequelize) => {
+  const { DataTypes } = require('sequelize');
+
 
 const Goal = sequelize.define('Goal', {
   id: {
@@ -36,4 +37,6 @@ const Goal = sequelize.define('Goal', {
   }
 });
 
-module.exports = Goal;
+return Goal;
+};
+
