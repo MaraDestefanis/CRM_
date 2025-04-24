@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "CRM Backend Functions for Netlify",
   "main": "api.js",
+  "scripts": {
+    "build": "npm install"
+  },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
