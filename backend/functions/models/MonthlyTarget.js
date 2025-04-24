@@ -1,4 +1,4 @@
-return (sequelize) => {
+module.exports = (sequelize) => {
   const { DataTypes } = require('sequelize');
 
 
@@ -37,3 +37,4 @@ const MonthlyTarget = sequelize.define('MonthlyTarget', {
 return MonthlyTarget;
 };
 
+}
