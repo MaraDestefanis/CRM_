@@ -4,7 +4,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const sequelize = require('./config/database');
+const sequelize = require('./models/database');
 
 const app = express();
 
