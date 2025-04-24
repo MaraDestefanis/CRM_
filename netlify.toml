@@ -7,7 +7,7 @@
 
 [functions]
   node_bundler = "esbuild"
-  external_node_modules = ["sqlite3", "pg-hstore", "sequelize"]
+  external_node_modules = ["sqlite3", "pg-hstore", "sequelize", "../config/database"]
 
 [[redirects]]
   from = "/api/*"
