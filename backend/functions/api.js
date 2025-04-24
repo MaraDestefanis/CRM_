@@ -13,7 +13,7 @@ app.use(bodyParser.json());
 
 const sequelize = new Sequelize({
   dialect: 'sqlite',
-  storage: './.netlify/functions/database.sqlite',
+  storage: '/tmp/database.sqlite',
   logging: false
 });
 
