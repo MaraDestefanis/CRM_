@@ -6,7 +6,7 @@
 [functions]
   directory = "backend/functions"
   node_bundler = "esbuild"
-  external_node_modules = ["sqlite3"]
+  external_node_modules = ["sqlite3", "pg-hstore"]
 
 [dev]
   command = "cd frontend && npm start"
