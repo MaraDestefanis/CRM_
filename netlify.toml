@@ -1,18 +1,18 @@
 [build]
-  base = "frontend"
-  publish = "build"
-  command = "npm run build"
-  functions = "../backend/functions"
+  command = "cd frontend && npm install && npm run build"
+  publish = "frontend/build"
+  functions = "backend/functions"
 
 [functions]
   directory = "backend/functions"
   node_bundler = "esbuild"
+  external_node_modules = ["sqlite3"]
 
 [dev]
-  command = "npm start"
+  command = "cd frontend && npm start"
   port = 3000
-  publish = "build"
-  functions = "../backend/functions"
+  publish = "frontend/build"
+  functions = "backend/functions"
 
 [[redirects]]
   from = "/api/*"
