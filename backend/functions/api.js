@@ -4,18 +4,12 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const { Sequelize } = require('sequelize');
+const sequelize = require('./config/database');
 
 const app = express();
 
 app.use(cors());
 app.use(bodyParser.json());
-
-const sequelize = new Sequelize({
-  dialect: 'sqlite',
-  storage: '/tmp/database.sqlite',
-  logging: false
-});
 
 const User = require('./models/User')(sequelize);
 const Client = require('./models/Client')(sequelize);
