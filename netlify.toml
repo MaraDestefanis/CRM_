@@ -1,4 +1,4 @@
-# Minimal Netlify configuration for CRM deployment
+# Ultra-minimal Netlify configuration for CRM deployment
 [build]
   base = "/"
   command = "cd frontend && npm install && npm run build"
@@ -12,7 +12,7 @@
 
 [[redirects]]
   from = "/api/*"
-  to = "/.netlify/functions/crm-api/:splat"
+  to = "/.netlify/functions/standalone-api/:splat"
   status = 200
 
 [[redirects]]
