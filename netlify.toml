@@ -1,4 +1,5 @@
 [build]
+  base = "/"
   command = "cd frontend && npm install && npm run build && cd ../backend/functions && npm install"
   publish = "frontend/build"
   functions = "backend/functions"
@@ -7,7 +8,7 @@
   directory = "backend/functions"
   node_bundler = "esbuild"
   external_node_modules = ["sqlite3", "pg-hstore", "sequelize"]
-  included_files = ["backend/functions/config/database.js"]
+  included_files = ["backend/functions/config/**"]
 
 [dev]
   command = "cd frontend && npm start"
