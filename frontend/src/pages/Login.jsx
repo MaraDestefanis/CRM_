@@ -78,7 +78,7 @@ const Login = ({ onLogin }) => {
         </form>
         <div className="login-info">
           <p>Demo Credentials:</p>
-          <p>Admin: admin@example.com / admin123</p>
+          <p>Admin: test@example.com / admin123</p>
         </div>
       </div>
     </div>

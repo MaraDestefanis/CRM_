@@ -18,9 +18,27 @@ const commentsRoutes = require('./api/comments');
 const { auth, adminOnly, supervisorOrAdmin } = require('./middleware/auth');
 
 const app = express();
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 8001;
 
-app.use(cors());
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  
+  next();
+});
+
+app.options('*', cors());
+
+app.use((req, res, next) => {
+  console.log('Request from origin:', req.headers.origin);
+  console.log('Request method:', req.method);
+  next();
+});
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -44,12 +62,16 @@ sequelize.sync({ alter: true })
     models.User.findOne({ where: { role: 'admin' } })
       .then(admin => {
         if (!admin) {
-          models.User.create({
-            name: 'Admin User',
-            email: 'admin@example.com',
-            password: 'admin123',
-            role: 'admin'
-          })
+          const bcrypt = require('bcryptjs');
+          bcrypt.hash('admin123', 10)
+            .then(hashedPassword => {
+              return models.User.create({
+                name: 'Admin User',
+                email: 'admin@example.com',
+                password: hashedPassword,
+                role: 'admin'
+              });
+            })
             .then(() => console.log('Admin user created.'))
             .catch(err => console.error('Error creating admin user:', err));
         }
