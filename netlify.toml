@@ -1,4 +1,4 @@
-# Simplified Netlify configuration for CRM deployment
+# Ultra-simplified Netlify configuration for CRM deployment
 [build]
   base = "/"
   command = "cd frontend && npm install && npm run build"
@@ -7,11 +7,11 @@
 
 [functions]
   node_bundler = "esbuild"
-  external_node_modules = ["sqlite3", "pg-hstore", "sequelize", "../config/database"]
+  external_node_modules = ["sqlite3", "pg-hstore", "sequelize"]
 
 [[redirects]]
   from = "/api/*"
-  to = "/.netlify/functions/:splat"
+  to = "/.netlify/functions/api-simple/:splat"
   status = 200
 
 [[redirects]]
