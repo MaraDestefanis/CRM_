@@ -1,0 +1,26 @@
+[build]
+  base = "frontend"
+  publish = "build"
+  command = "npm run build"
+  functions = "../backend/functions"
+
+[functions]
+  directory = "backend/functions"
+  node_bundler = "esbuild"
+
+[dev]
+  command = "npm start"
+  port = 3000
+  publish = "build"
+  functions = "../backend/functions"
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  force = true
