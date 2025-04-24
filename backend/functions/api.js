@@ -17,14 +17,14 @@ const sequelize = new Sequelize({
   logging: false
 });
 
-const User = require('../models/User')(sequelize);
-const Client = require('../models/Client')(sequelize);
-const Goal = require('../models/Goal')(sequelize);
-const Sale = require('../models/Sale')(sequelize);
-const Strategy = require('../models/Strategy')(sequelize);
-const Task = require('../models/Task')(sequelize);
-const Comment = require('../models/Comment')(sequelize);
-const MonthlyTarget = require('../models/MonthlyTarget')(sequelize);
+const User = require('./models/User')(sequelize);
+const Client = require('./models/Client')(sequelize);
+const Goal = require('./models/Goal')(sequelize);
+const Sale = require('./models/Sale')(sequelize);
+const Strategy = require('./models/Strategy')(sequelize);
+const Task = require('./models/Task')(sequelize);
+const Comment = require('./models/Comment')(sequelize);
+const MonthlyTarget = require('./models/MonthlyTarget')(sequelize);
 
 User.hasMany(Goal, { foreignKey: 'userId' });
 User.hasMany(Task, { foreignKey: 'assignedTo' });
