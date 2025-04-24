@@ -1,3 +1,3 @@
-const api = require('./api');
+const api = require('./api-simple');
 
 exports.handler = api.handler;
