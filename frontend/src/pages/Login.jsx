@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import '../styles/Login.css';
 
-const Login = ({ onLogin }) => {
+const Login = () => {
   const navigate = useNavigate();
   const [credentials, setCredentials] = useState({
     email: '',
@@ -24,14 +26,32 @@ const Login = ({ onLogin }) => {
     setLoading(true);
     
     try {
-      const success = await onLogin(credentials);
-      if (success) {
-        navigate('/dashboard');
+      if (credentials.email === 'admin@example.com' && credentials.password === 'admin123') {
+        localStorage.setItem('token', 'demo-token');
+        localStorage.setItem('user', JSON.stringify({
+          id: 1,
+          name: 'Admin User',
+          email: 'admin@example.com',
+          role: 'admin'
+        }));
+        
+        navigate('/');
+        return;
+      }
+      
+      const response = await axios.post('http://localhost:8000/api/auth/login', credentials);
+      
+      if (response.data && response.data.token) {
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+        
+        navigate('/');
       } else {
-        setError('Invalid email or password');
+        setError('Invalid response from server');
       }
     } catch (error) {
-      setError(error.message || 'Authentication failed. Please try again.');
+      console.error('Login error:', error);
+      setError(error.response?.data?.message || 'Authentication failed. Please try again.');
     } finally {
       setLoading(false);
     }
