@@ -52,55 +52,55 @@ function App() {
   return (
     <Router>
       <div className="app">
-        {isAuthenticated && (
-          <>
-            <Navbar user={user} onLogout={handleLogout} />
-            <div className="content-wrapper">
-              <Sidebar />
-              <main className="main-content">
-                <Routes>
-                  <Route path="/dashboard" element={
-                    <ProtectedRoute>
-                      <Dashboard />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/goals" element={
-                    <ProtectedRoute>
-                      <Goals />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/analysis" element={
-                    <ProtectedRoute>
-                      <Analysis />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/strategies" element={
-                    <ProtectedRoute>
-                      <Strategies />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/tasks" element={
-                    <ProtectedRoute>
-                      <Tasks />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/control" element={
-                    <ProtectedRoute>
-                      <Control />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="*" element={<Navigate to="/dashboard" replace />} />
-                </Routes>
-              </main>
-            </div>
-          </>
-        )}
-        {!isAuthenticated && (
-          <Routes>
-            <Route path="/login" element={<Login onLogin={handleLogin} />} />
-            <Route path="*" element={<Navigate to="/login" replace />} />
-          </Routes>
-        )}
+        <Routes>
+          <Route path="/login" element={<Login onLogin={handleLogin} />} />
+          <Route path="/" element={
+            isAuthenticated ? (
+              <>
+                <Navbar user={user} onLogout={handleLogout} />
+                <div className="content-wrapper">
+                  <Sidebar />
+                  <main className="main-content">
+                    <Outlet />
+                  </main>
+                </div>
+              </>
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          } />
+          <Route path="/dashboard" element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          } />
+          <Route path="/goals" element={
+            <ProtectedRoute>
+              <Goals />
+            </ProtectedRoute>
+          } />
+          <Route path="/analysis" element={
+            <ProtectedRoute>
+              <Analysis />
+            </ProtectedRoute>
+          } />
+          <Route path="/strategies" element={
+            <ProtectedRoute>
+              <Strategies />
+            </ProtectedRoute>
+          } />
+          <Route path="/tasks" element={
+            <ProtectedRoute>
+              <Tasks />
+            </ProtectedRoute>
+          } />
+          <Route path="/control" element={
+            <ProtectedRoute>
+              <Control />
+            </ProtectedRoute>
+          } />
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        </Routes>
       </div>
     </Router>
   );
