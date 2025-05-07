@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import clientService from '../services/clientService';
 import saleService from '../services/saleService';
 import goalService from '../services/goalService';
+import '../styles/Analysis.css';
 
 const Analysis = () => {
   const [selectedVariable, setSelectedVariable] = useState('revenue');

@@ -1,22 +1,33 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import '../styles/Dashboard.css';
 
-const Navbar = ({ onLogout }) => {
+const Navbar = ({ user, onLogout }) => {
+  const navigate = useNavigate();
+  
+  const handleLogout = () => {
+    if (onLogout) {
+      onLogout();
+    } else {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      navigate('/');
+    }
+  };
+  
   return (
-    <nav className="navbar">
-      <div className="navbar-brand">
-        <Link to="/dashboard">CRM System</Link>
+    <div className="navbar-container">
+      <div className="navbar-user">
+        {user && (
+          <span className="user-name">{user.name || 'User'}</span>
+        )}
       </div>
-      <div className="navbar-menu">
-        <div className="navbar-end">
-          <div className="navbar-item">
-            <button className="button is-light" onClick={onLogout}>
-              Logout
-            </button>
-          </div>
-        </div>
+      <div className="navbar-actions">
+        <button className="logout-button" onClick={handleLogout}>
+          Logout
+        </button>
       </div>
-    </nav>
+    </div>
   );
 };
 

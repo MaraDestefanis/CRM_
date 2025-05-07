@@ -6,6 +6,7 @@ const MonthlyTarget = require('./MonthlyTarget');
 const Sale = require('./Sale');
 const Strategy = require('./Strategy');
 const Task = require('./Task');
+const Comment = require('./Comment');
 
 User.hasMany(Goal, { foreignKey: 'userId' });
 Goal.belongsTo(User, { foreignKey: 'userId' });
@@ -37,6 +38,9 @@ Task.belongsTo(Strategy, { foreignKey: 'strategyId' });
 Client.hasMany(Task, { foreignKey: 'clientId' });
 Task.belongsTo(Client, { foreignKey: 'clientId' });
 
+User.hasMany(Comment, { foreignKey: 'authorId' });
+Comment.belongsTo(User, { foreignKey: 'authorId', as: 'author' });
+
 module.exports = {
   sequelize,
   User,
@@ -45,5 +49,6 @@ module.exports = {
   MonthlyTarget,
   Sale,
   Strategy,
-  Task
+  Task,
+  Comment
 };
