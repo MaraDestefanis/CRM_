@@ -284,7 +284,7 @@ const Control = () => {
   };
 
   const calculateStrategyImpact = (strategy) => {
-    return Math.floor(Math.random() * 25) - 5;
+    return 10;
   };
 
   const calculateTaskCompletion = (strategyId) => {
