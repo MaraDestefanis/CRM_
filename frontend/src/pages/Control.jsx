@@ -5,6 +5,7 @@ import saleService from '../services/saleService';
 import clientService from '../services/clientService';
 import strategyService from '../services/strategyService';
 import taskService from '../services/taskService';
+import '../styles/Control.css';
 
 const Control = () => {
   const navigate = useNavigate();
