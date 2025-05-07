@@ -2,6 +2,8 @@ CRM Personalizado
 
 Especificacion Técnica Detallada (ETD)
 
+Este es un cambio de prueba para verificar el acceso al repositorio.
+
 1. Introducción 🎯
 El sistema de gestión comercial aquí descrito está orientado a:
 
@@ -156,4 +158,3 @@ Control de Acceso por Roles: Permisos diferenciados por rol (admin, supervisor, 
 Importación de Datos desde ERP: Framework para monitoreo de correos e importación de datos de ventas/clientes.
 Generación Automática de Tareas: Para tareas recurrentes y nuevas estrategias.
 Relaciones entre Entidades: Relaciones correctas entre todos los modelos y sus dependencias.
-

@@ -5,6 +5,7 @@ import saleService from '../services/saleService';
 import clientService from '../services/clientService';
 import strategyService from '../services/strategyService';
 import taskService from '../services/taskService';
+import '../styles/Control.css';
 
 const Control = () => {
   const navigate = useNavigate();
@@ -283,7 +284,7 @@ const Control = () => {
   };
 
   const calculateStrategyImpact = (strategy) => {
-    return Math.floor(Math.random() * 25) - 5;
+    return 10;
   };
 
   const calculateTaskCompletion = (strategyId) => {

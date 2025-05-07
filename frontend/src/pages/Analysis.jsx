@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import clientService from '../services/clientService';
 import saleService from '../services/saleService';
 import goalService from '../services/goalService';
+import '../styles/Analysis.css';
 
 const Analysis = () => {
   const [selectedVariable, setSelectedVariable] = useState('revenue');
@@ -196,7 +197,7 @@ const Analysis = () => {
   };
 
   const calculateGrowth = (variable) => {
-    return Math.floor(Math.random() * 30) - 10;
+    return 5;
   };
 
   const formatCurrency = (value) => {
@@ -318,15 +319,10 @@ const Analysis = () => {
               )}
             </div>
             
+            {/* Charts temporarily disabled for demo */}
             <div className="chart-container">
-              <h3>{selectedVariable === 'revenue' ? 'Revenue Trend' : 
-                   selectedVariable === 'clientCount' ? 'Client Evolution' :
-                   selectedVariable === 'newClients' ? 'New Clients Acquisition' :
-                   'Client Retention Trends'}</h3>
-              <div className="chart-placeholder">
-                {/* In a real implementation, we would use a charting library like Chart.js or Recharts */}
-                <p>{selectedVariable} chart would be displayed here</p>
-              </div>
+              <h3>Charts Coming Soon</h3>
+              <p className="text-muted">Advanced visualization features will be available in the next update.</p>
             </div>
           </div>
           

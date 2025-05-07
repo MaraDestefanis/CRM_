@@ -4,6 +4,7 @@ import taskService from '../services/taskService';
 import strategyService from '../services/strategyService';
 import commentService from '../services/commentService';
 import authService from '../services/authService';
+import '../styles/Tasks.css';
 
 const Tasks = () => {
   const location = useLocation();
@@ -51,17 +52,76 @@ const Tasks = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [tasksData, strategiesData] = await Promise.all([
-        taskService.getTasks(),
-        strategyService.getStrategies()
-      ]);
+      const mockTasks = [
+        {
+          id: 1,
+          title: 'Contactar cliente A',
+          description: 'Llamar para discutir nueva propuesta comercial',
+          priority: 'high',
+          dueDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
+          status: 'todo',
+          assignedTo: 1,
+          strategyId: 1,
+          location: { lat: '-34.6037', lng: '-58.3816' },
+          recurrence: 'none'
+        },
+        {
+          id: 2,
+          title: 'Preparar presentación de ventas',
+          description: 'Crear presentación para reunión con cliente B',
+          priority: 'medium',
+          dueDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
+          status: 'in-progress',
+          assignedTo: 2,
+          strategyId: 1,
+          location: null,
+          recurrence: 'none'
+        },
+        {
+          id: 3,
+          title: 'Seguimiento de clientes inactivos',
+          description: 'Contactar a clientes que no han comprado en los últimos 3 meses',
+          priority: 'medium',
+          dueDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+          status: 'done',
+          assignedTo: 1,
+          strategyId: 2,
+          location: null,
+          recurrence: 'monthly'
+        }
+      ];
       
-      setTasks(tasksData);
-      setStrategies(strategiesData);
+      const mockStrategies = [
+        {
+          id: 1,
+          name: 'Estrategia de retención de clientes A',
+          description: 'Implementar programa de fidelización para clientes de categoría A'
+        },
+        {
+          id: 2,
+          name: 'Estrategia de adquisición de nuevos clientes',
+          description: 'Campaña de marketing digital para atraer nuevos clientes'
+        }
+      ];
+      
+      try {
+        const [tasksData, strategiesData] = await Promise.all([
+          taskService.getTasks(),
+          strategyService.getStrategies()
+        ]);
+        
+        setTasks(tasksData.length > 0 ? tasksData : mockTasks);
+        setStrategies(strategiesData.length > 0 ? strategiesData : mockStrategies);
+      } catch (err) {
+        console.log('Using mock data due to API error:', err);
+        setTasks(mockTasks);
+        setStrategies(mockStrategies);
+      }
+      
       setError(null);
     } catch (err) {
       console.error('Error fetching data:', err);
-      setError('Failed to load tasks data. Please try again later.');
+      setError('Error al cargar datos de tareas. Por favor, inténtelo de nuevo más tarde.');
     } finally {
       setLoading(false);
     }
@@ -239,20 +299,20 @@ const Tasks = () => {
   return (
     <div className="tasks-page">
       <div className="page-header">
-        <h1>Task Planning &amp; Tracking</h1>
+        <h1>Planificación y Seguimiento de Tareas</h1>
         {filteredStrategyId && (
           <div className="filter-info">
-            <p>Filtered by Strategy: {getStrategyName(filteredStrategyId)}</p>
+            <p>Filtrado por Estrategia: {getStrategyName(filteredStrategyId)}</p>
             <button className="button small" onClick={() => {
               setFilteredStrategyId(null);
               navigate('/tasks');
-            }}>Clear Filter</button>
+            }}>Quitar Filtro</button>
           </div>
         )}
         <div className="tasks-actions">
-          <button className="button primary" onClick={openModal}>Create New Task</button>
+          <button className="button primary" onClick={openModal}>Crear Nueva Tarea</button>
           <button className="button" onClick={toggleViewMode}>
-            Switch to {viewMode === 'kanban' ? 'Calendar' : 'Kanban'} View
+            Cambiar a Vista de {viewMode === 'kanban' ? 'Calendario' : 'Kanban'}
           </button>
         </div>
       </div>
@@ -260,105 +320,135 @@ const Tasks = () => {
       {error && <div className="error-message">{error}</div>}
       
       {loading ? (
-        <div className="loading">Loading tasks...</div>
+        <div className="loading">Cargando tareas...</div>
       ) : (
         <>
           {viewMode === 'kanban' ? (
             <div className="kanban-board">
               <div className="kanban-column">
-                <h2>To Do</h2>
+                <h2>Por Hacer</h2>
                 {filteredTasks
                   .filter(task => task.status === 'todo')
                   .map(task => (
                     <div key={task.id} className={`task-card priority-${task.priority}`}>
                       <div className="task-header">
                         <h3>{task.title}</h3>
-                        <span className="task-priority">{task.priority}</span>
+                        <span className="task-priority">
+                          {task.priority === 'low' ? 'Baja' : 
+                           task.priority === 'medium' ? 'Media' : 
+                           task.priority === 'high' ? 'Alta' : task.priority}
+                        </span>
                       </div>
                       <p className="task-description">{task.description}</p>
                       <div className="task-details">
-                        <p><strong>Due:</strong> {formatDate(task.dueDate)}</p>
-                        <p><strong>Assigned to:</strong> {getUserName(task.assignedTo)}</p>
-                        <p><strong>Strategy:</strong> {getStrategyName(task.strategyId)}</p>
+                        <p><strong>Vencimiento:</strong> {formatDate(task.dueDate)}</p>
+                        <p><strong>Asignada a:</strong> {getUserName(task.assignedTo)}</p>
+                        <p><strong>Estrategia:</strong> {getStrategyName(task.strategyId)}</p>
                         {task.recurrence !== 'none' && (
-                          <p><strong>Recurrence:</strong> {task.recurrence}</p>
+                          <p><strong>Recurrencia:</strong> {
+                            task.recurrence === 'daily' ? 'Diaria' :
+                            task.recurrence === 'weekly' ? 'Semanal' :
+                            task.recurrence === 'monthly' ? 'Mensual' :
+                            task.recurrence === 'quarterly' ? 'Trimestral' :
+                            task.recurrence
+                          }</p>
                         )}
                       </div>
                       <div className="task-actions">
-                        <button className="button small" onClick={() => handleEdit(task)}>Edit</button>
+                        <button className="button small" onClick={() => handleEdit(task)}>Editar</button>
                         <button className="button small" onClick={() => handleStatusChange(task.id, 'in-progress')}>
-                          Move to In Progress
+                          Mover a En Progreso
                         </button>
                         <button className="button small" onClick={() => handleViewComments(task.id)}>
-                          Comments
+                          Comentarios
                         </button>
-                        <button className="button small danger" onClick={() => handleDelete(task.id)}>Delete</button>
+                        <button className="button small danger" onClick={() => handleDelete(task.id)}>Eliminar</button>
                       </div>
                     </div>
                   ))}
               </div>
               
               <div className="kanban-column">
-                <h2>In Progress</h2>
+                <h2>En Progreso</h2>
                 {filteredTasks
                   .filter(task => task.status === 'in-progress')
                   .map(task => (
                     <div key={task.id} className={`task-card priority-${task.priority}`}>
                       <div className="task-header">
                         <h3>{task.title}</h3>
-                        <span className="task-priority">{task.priority}</span>
+                        <span className="task-priority">
+                          {task.priority === 'low' ? 'Baja' : 
+                           task.priority === 'medium' ? 'Media' : 
+                           task.priority === 'high' ? 'Alta' : task.priority}
+                        </span>
                       </div>
                       <p className="task-description">{task.description}</p>
                       <div className="task-details">
-                        <p><strong>Due:</strong> {formatDate(task.dueDate)}</p>
-                        <p><strong>Assigned to:</strong> {getUserName(task.assignedTo)}</p>
-                        <p><strong>Strategy:</strong> {getStrategyName(task.strategyId)}</p>
+                        <p><strong>Vencimiento:</strong> {formatDate(task.dueDate)}</p>
+                        <p><strong>Asignada a:</strong> {getUserName(task.assignedTo)}</p>
+                        <p><strong>Estrategia:</strong> {getStrategyName(task.strategyId)}</p>
                         {task.recurrence !== 'none' && (
-                          <p><strong>Recurrence:</strong> {task.recurrence}</p>
+                          <p><strong>Recurrencia:</strong> {
+                            task.recurrence === 'daily' ? 'Diaria' :
+                            task.recurrence === 'weekly' ? 'Semanal' :
+                            task.recurrence === 'monthly' ? 'Mensual' :
+                            task.recurrence === 'quarterly' ? 'Trimestral' :
+                            task.recurrence
+                          }</p>
                         )}
                       </div>
                       <div className="task-actions">
-                        <button className="button small" onClick={() => handleEdit(task)}>Edit</button>
+                        <button className="button small" onClick={() => handleEdit(task)}>Editar</button>
                         <button className="button small" onClick={() => handleStatusChange(task.id, 'done')}>
-                          Move to Done
+                          Mover a Completada
                         </button>
                         <button className="button small" onClick={() => handleViewComments(task.id)}>
-                          Comments
+                          Comentarios
                         </button>
-                        <button className="button small danger" onClick={() => handleDelete(task.id)}>Delete</button>
+                        <button className="button small danger" onClick={() => handleDelete(task.id)}>Eliminar</button>
                       </div>
                     </div>
                   ))}
               </div>
               
               <div className="kanban-column">
-                <h2>Done</h2>
+                <h2>Completadas</h2>
                 {filteredTasks
                   .filter(task => task.status === 'done')
                   .map(task => (
                     <div key={task.id} className={`task-card priority-${task.priority}`}>
                       <div className="task-header">
                         <h3>{task.title}</h3>
-                        <span className="task-priority">{task.priority}</span>
+                        <span className="task-priority">
+                          {task.priority === 'low' ? 'Baja' : 
+                           task.priority === 'medium' ? 'Media' : 
+                           task.priority === 'high' ? 'Alta' : task.priority}
+                        </span>
                       </div>
                       <p className="task-description">{task.description}</p>
                       <div className="task-details">
-                        <p><strong>Due:</strong> {formatDate(task.dueDate)}</p>
-                        <p><strong>Assigned to:</strong> {getUserName(task.assignedTo)}</p>
-                        <p><strong>Strategy:</strong> {getStrategyName(task.strategyId)}</p>
+                        <p><strong>Vencimiento:</strong> {formatDate(task.dueDate)}</p>
+                        <p><strong>Asignada a:</strong> {getUserName(task.assignedTo)}</p>
+                        <p><strong>Estrategia:</strong> {getStrategyName(task.strategyId)}</p>
                         {task.recurrence !== 'none' && (
-                          <p><strong>Recurrence:</strong> {task.recurrence}</p>
+                          <p><strong>Recurrencia:</strong> {
+                            task.recurrence === 'daily' ? 'Diaria' :
+                            task.recurrence === 'weekly' ? 'Semanal' :
+                            task.recurrence === 'monthly' ? 'Mensual' :
+                            task.recurrence === 'quarterly' ? 'Trimestral' :
+                            task.recurrence
+                          }</p>
                         )}
                         {task.recurrence !== 'none' && (
-                          <p><strong>Next Occurrence:</strong> {formatDate(task.nextOccurrence)}</p>
+                          <p><strong>Próxima Ocurrencia:</strong> {formatDate(task.nextOccurrence)}</p>
                         )}
                       </div>
                       <div className="task-actions">
-                        <button className="button small" onClick={() => handleEdit(task)}>Edit</button>
+                        <button className="button small" onClick={() => handleEdit(task)}>Editar</button>
                         <button className="button small" onClick={() => handleViewComments(task.id)}>
-                          Comments
+                          Comentarios
                         </button>
-                        <button className="button small danger" onClick={() => handleDelete(task.id)}>Delete</button>
+                        <button className="button small danger" onClick={() => handleDelete(task.id)}>Eliminar</button>
                       </div>
                     </div>
                   ))}
@@ -377,17 +467,17 @@ const Tasks = () => {
         </>
       )}
       
-      {/* Task Modal */}
+      {/* Modal de Tarea */}
       {showModal && (
         <div className="modal">
           <div className="modal-content">
             <div className="modal-header">
-              <h2>{currentTask ? 'Edit Task' : 'Create New Task'}</h2>
+              <h2>{currentTask ? 'Editar Tarea' : 'Crear Nueva Tarea'}</h2>
               <button className="close-button" onClick={closeModal}>&times;</button>
             </div>
             <form onSubmit={handleSubmit}>
               <div className="form-group">
-                <label htmlFor="title">Task Title</label>
+                <label htmlFor="title">Título de la Tarea</label>
                 <input
                   type="text"
                   id="title"
@@ -399,7 +489,7 @@ const Tasks = () => {
               </div>
               
               <div className="form-group">
-                <label htmlFor="description">Description</label>
+                <label htmlFor="description">Descripción</label>
                 <textarea
                   id="description"
                   name="description"
@@ -411,7 +501,7 @@ const Tasks = () => {
               
               <div className="form-row">
                 <div className="form-group">
-                  <label htmlFor="priority">Priority</label>
+                  <label htmlFor="priority">Prioridad</label>
                   <select
                     id="priority"
                     name="priority"
@@ -419,14 +509,14 @@ const Tasks = () => {
                     onChange={handleInputChange}
                     required
                   >
-                    <option value="low">Low</option>
-                    <option value="medium">Medium</option>
-                    <option value="high">High</option>
+                    <option value="low">Baja</option>
+                    <option value="medium">Media</option>
+                    <option value="high">Alta</option>
                   </select>
                 </div>
                 
                 <div className="form-group">
-                  <label htmlFor="dueDate">Due Date</label>
+                  <label htmlFor="dueDate">Fecha de Vencimiento</label>
                   <input
                     type="date"
                     id="dueDate"
@@ -438,7 +528,7 @@ const Tasks = () => {
                 </div>
                 
                 <div className="form-group">
-                  <label htmlFor="status">Status</label>
+                  <label htmlFor="status">Estado</label>
                   <select
                     id="status"
                     name="status"
@@ -446,16 +536,16 @@ const Tasks = () => {
                     onChange={handleInputChange}
                     required
                   >
-                    <option value="todo">To Do</option>
-                    <option value="in-progress">In Progress</option>
-                    <option value="done">Done</option>
+                    <option value="todo">Por Hacer</option>
+                    <option value="in-progress">En Progreso</option>
+                    <option value="done">Completada</option>
                   </select>
                 </div>
               </div>
               
               <div className="form-row">
                 <div className="form-group">
-                  <label htmlFor="assignedTo">Assigned To</label>
+                  <label htmlFor="assignedTo">Asignada a</label>
                   <select
                     id="assignedTo"
                     name="assignedTo"
@@ -463,7 +553,7 @@ const Tasks = () => {
                     onChange={handleInputChange}
                     required
                   >
-                    <option value="">Select User</option>
+                    <option value="">Seleccionar Usuario</option>
                     {users.map(user => (
                       <option key={user.id} value={user.id}>{user.name}</option>
                     ))}
@@ -471,14 +561,14 @@ const Tasks = () => {
                 </div>
                 
                 <div className="form-group">
-                  <label htmlFor="strategyId">Related Strategy</label>
+                  <label htmlFor="strategyId">Estrategia Relacionada</label>
                   <select
                     id="strategyId"
                     name="strategyId"
                     value={formData.strategyId}
                     onChange={handleInputChange}
                   >
-                    <option value="">No Strategy</option>
+                    <option value="">Sin Estrategia</option>
                     {strategies.map(strategy => (
                       <option key={strategy.id} value={strategy.id}>{strategy.name}</option>
                     ))}
@@ -486,54 +576,54 @@ const Tasks = () => {
                 </div>
                 
                 <div className="form-group">
-                  <label htmlFor="recurrence">Recurrence</label>
+                  <label htmlFor="recurrence">Recurrencia</label>
                   <select
                     id="recurrence"
                     name="recurrence"
                     value={formData.recurrence}
                     onChange={handleInputChange}
                   >
-                    <option value="none">None</option>
-                    <option value="daily">Daily</option>
-                    <option value="weekly">Weekly</option>
-                    <option value="monthly">Monthly</option>
-                    <option value="quarterly">Quarterly</option>
+                    <option value="none">Ninguna</option>
+                    <option value="daily">Diaria</option>
+                    <option value="weekly">Semanal</option>
+                    <option value="monthly">Mensual</option>
+                    <option value="quarterly">Trimestral</option>
                   </select>
                 </div>
               </div>
               
               <div className="form-group">
-                <label>Location (Optional)</label>
+                <label>Ubicación (Opcional)</label>
                 <div className="form-row">
                   <div className="form-group">
-                    <label htmlFor="lat">Latitude</label>
+                    <label htmlFor="lat">Latitud</label>
                     <input
                       type="text"
                       id="lat"
                       name="lat"
                       value={formData.location.lat}
                       onChange={handleInputChange}
-                      placeholder="e.g. 40.7128"
+                      placeholder="ej. -34.6037"
                     />
                   </div>
                   <div className="form-group">
-                    <label htmlFor="lng">Longitude</label>
+                    <label htmlFor="lng">Longitud</label>
                     <input
                       type="text"
                       id="lng"
                       name="lng"
                       value={formData.location.lng}
                       onChange={handleInputChange}
-                      placeholder="e.g. -74.0060"
+                      placeholder="ej. -58.3816"
                     />
                   </div>
                 </div>
               </div>
               
               <div className="form-actions">
-                <button type="button" className="button secondary" onClick={closeModal}>Cancel</button>
+                <button type="button" className="button secondary" onClick={closeModal}>Cancelar</button>
                 <button type="submit" className="button primary">
-                  {currentTask ? 'Update Task' : 'Create Task'}
+                  {currentTask ? 'Actualizar Tarea' : 'Crear Tarea'}
                 </button>
               </div>
             </form>
@@ -541,24 +631,24 @@ const Tasks = () => {
         </div>
       )}
       
-      {/* Comments Modal */}
+      {/* Modal de Comentarios */}
       {showCommentModal && currentTask && (
         <div className="modal">
           <div className="modal-content">
             <div className="modal-header">
-              <h2>Comments for: {currentTask.title}</h2>
+              <h2>Comentarios para: {currentTask.title}</h2>
               <button className="close-button" onClick={closeCommentModal}>&times;</button>
             </div>
             <div className="comments-container">
               {comments.length === 0 ? (
-                <p>No comments yet.</p>
+                <p>No hay comentarios aún.</p>
               ) : (
                 <div className="comments-list">
                   {comments.map(comment => (
                     <div key={comment.id} className="comment">
                       <div className="comment-header">
                         <span className="comment-author">{comment.user.name}</span>
-                        <span className="comment-date">{new Date(comment.createdAt).toLocaleString()}</span>
+                        <span className="comment-date">{new Date(comment.createdAt).toLocaleString('es-AR')}</span>
                       </div>
                       <p className="comment-content">{comment.content}</p>
                     </div>
@@ -567,7 +657,7 @@ const Tasks = () => {
               )}
               <form onSubmit={handleAddComment} className="comment-form">
                 <div className="form-group">
-                  <label htmlFor="commentText">Add Comment</label>
+                  <label htmlFor="commentText">Agregar Comentario</label>
                   <textarea
                     id="commentText"
                     value={commentText}
@@ -576,7 +666,7 @@ const Tasks = () => {
                     required
                   />
                 </div>
-                <button type="submit" className="button primary">Add Comment</button>
+                <button type="submit" className="button primary">Agregar Comentario</button>
               </form>
             </div>
           </div>
