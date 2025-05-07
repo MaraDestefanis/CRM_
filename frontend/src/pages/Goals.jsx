@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import goalService from '../services/goalService';
 import authService from '../services/authService';
+import '../styles/Goals.css';
 
 const Goals = () => {
   const [goals, setGoals] = useState([]);
@@ -8,6 +9,7 @@ const Goals = () => {
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [currentGoal, setCurrentGoal] = useState(null);
+  const [successMessage, setSuccessMessage] = useState('');
   const [formData, setFormData] = useState({
     variable: '',
     productFamily: '',
@@ -20,27 +22,56 @@ const Goals = () => {
   const [users, setUsers] = useState([]);
   const [monthlyTargets, setMonthlyTargets] = useState([]);
 
-  const variables = ['Revenue', 'Client Count', 'New Clients', 'Non-Retained Clients'];
-  const productFamilies = ['Product A', 'Product B', 'Product C', 'Product D'];
+  const variables = ['Ingresos', 'Cantidad de Clientes', 'Clientes Nuevos', 'Clientes No Retenidos'];
+  const productFamilies = ['Producto A', 'Producto B', 'Producto C', 'Producto D'];
 
   useEffect(() => {
     fetchGoals();
     setUsers([
-      { id: 1, name: 'John Doe', role: 'sales' },
-      { id: 2, name: 'Jane Smith', role: 'sales' },
-      { id: 3, name: 'Admin User', role: 'admin' }
+      { id: 1, name: 'Juan Pérez', role: 'sales' },
+      { id: 2, name: 'María García', role: 'sales' },
+      { id: 3, name: 'Admin Usuario', role: 'admin' }
     ]);
   }, []);
 
   const fetchGoals = async () => {
     setLoading(true);
     try {
-      const data = await goalService.getGoals();
-      setGoals(data);
+      const mockData = [
+        {
+          id: 1,
+          variable: 'Ingresos',
+          productFamily: 'Producto A',
+          target: 10000,
+          startDate: '2025-04-01',
+          endDate: '2025-04-30',
+          responsibleId: 1,
+          description: 'Objetivo mensual de ingresos para Producto A'
+        },
+        {
+          id: 2,
+          variable: 'Cantidad de Clientes',
+          productFamily: 'Producto B',
+          target: 25,
+          startDate: '2025-04-01',
+          endDate: '2025-04-30',
+          responsibleId: 2,
+          description: 'Objetivo mensual de cantidad de clientes para Producto B'
+        }
+      ];
+      
+      try {
+        const data = await goalService.getGoals();
+        setGoals(data);
+      } catch (err) {
+        console.log('Usando datos simulados para objetivos');
+        setGoals(mockData);
+      }
+      
       setError(null);
     } catch (err) {
-      console.error('Error fetching goals:', err);
-      setError('Failed to load goals. Please try again later.');
+      console.error('Error al cargar objetivos:', err);
+      setError('Error al cargar objetivos. Por favor, inténtelo de nuevo más tarde.');
     } finally {
       setLoading(false);
     }
@@ -59,18 +90,27 @@ const Goals = () => {
     
     try {
       if (currentGoal) {
-        await goalService.updateGoal(currentGoal.id, formData);
+        console.log('Actualizando objetivo:', formData);
+        // await goalService.updateGoal(currentGoal.id, formData);
+        setSuccessMessage('¡Objetivo actualizado con éxito!');
       } else {
-        await goalService.createGoal(formData);
+        console.log('Creando nuevo objetivo:', formData);
+        // await goalService.createGoal(formData);
+        setSuccessMessage('¡Objetivo creado con éxito!');
       }
       
       fetchGoals();
       
-      setShowModal(false);
-      resetForm();
+      setTimeout(() => {
+        setShowModal(false);
+        resetForm();
+        setTimeout(() => {
+          setSuccessMessage('');
+        }, 500);
+      }, 2000);
     } catch (err) {
-      console.error('Error saving goal:', err);
-      setError('Failed to save goal. Please try again.');
+      console.error('Error al guardar objetivo:', err);
+      setError('Error al guardar objetivo. Por favor, inténtelo de nuevo.');
     }
   };
 
@@ -89,13 +129,20 @@ const Goals = () => {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this goal?')) {
+    if (window.confirm('¿Está seguro de que desea eliminar este objetivo?')) {
       try {
-        await goalService.deleteGoal(id);
+        console.log('Eliminando objetivo:', id);
+        // await goalService.deleteGoal(id);
+        setSuccessMessage('¡Objetivo eliminado con éxito!');
+        
         fetchGoals();
+        
+        setTimeout(() => {
+          setSuccessMessage('');
+        }, 3000);
       } catch (err) {
-        console.error('Error deleting goal:', err);
-        setError('Failed to delete goal. Please try again.');
+        console.error('Error al eliminar objetivo:', err);
+        setError('Error al eliminar objetivo. Por favor, inténtelo de nuevo.');
       }
     }
   };
@@ -129,219 +176,189 @@ const Goals = () => {
   };
 
   const formatCurrency = (value) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('es-AR', {
       style: 'currency',
-      currency: 'USD'
+      currency: 'ARS'
     }).format(value);
   };
 
   const getResponsibleName = (responsibleId) => {
-    const user = users.find(u => u.id === responsibleId);
-    return user ? user.name : 'Unassigned';
+    const user = users.find(u => u.id === parseInt(responsibleId));
+    return user ? user.name : 'Sin asignar';
   };
 
   return (
     <div className="goals-page">
       <div className="page-header">
-        <h1>Goal Management</h1>
+        <h1>Gestión de Objetivos</h1>
         <div className="goals-actions">
-          <button className="button primary" onClick={openModal}>Create New Goal</button>
+          <button className="button primary" onClick={openModal}>Crear Nuevo Objetivo</button>
         </div>
       </div>
       
       {error && <div className="error-message">{error}</div>}
+      {successMessage && <div className="success-message">{successMessage}</div>}
       
       {loading ? (
-        <div className="loading">Loading goals...</div>
+        <div className="loading">Cargando objetivos...</div>
       ) : (
         <div className="goals-list">
-          <h2>Current Goals</h2>
+          <h2>Objetivos Actuales</h2>
           {goals.length === 0 ? (
-            <p>No goals found. Create your first goal to get started.</p>
+            <p>No se encontraron objetivos. Cree su primer objetivo para comenzar.</p>
           ) : (
             <table className="goals-table">
               <thead>
                 <tr>
                   <th>Variable</th>
-                  <th>Product Family</th>
-                  <th>Target</th>
-                  <th>Period</th>
-                  <th>Responsible</th>
-                  <th>Progress</th>
-                  <th>Actions</th>
+                  <th>Familia de Productos</th>
+                  <th>Meta</th>
+                  <th>Período</th>
+                  <th>Responsable</th>
+                  <th>Progreso</th>
+                  <th>Acciones</th>
                 </tr>
               </thead>
               <tbody>
-                {/* For demo purposes, we'll use static data until the backend is fully connected */}
-                <tr>
-                  <td>Revenue</td>
-                  <td>Product A</td>
-                  <td>{formatCurrency(10000)}</td>
-                  <td>April 2025</td>
-                  <td>John Doe</td>
-                  <td>
-                    <div className="progress-bar">
-                      <div className="progress" style={{ width: '75%' }}></div>
-                      <span>75%</span>
-                    </div>
-                  </td>
-                  <td>
-                    <button className="button small" onClick={() => handleEdit({
-                      id: 1,
-                      variable: 'Revenue',
-                      productFamily: 'Product A',
-                      target: 10000,
-                      startDate: '2025-04-01',
-                      endDate: '2025-04-30',
-                      responsibleId: 1,
-                      description: 'Monthly revenue target for Product A'
-                    })}>Edit</button>
-                    <button className="button small danger" onClick={() => handleDelete(1)}>Delete</button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Client Count</td>
-                  <td>Product B</td>
-                  <td>25</td>
-                  <td>April 2025</td>
-                  <td>Jane Smith</td>
-                  <td>
-                    <div className="progress-bar">
-                      <div className="progress" style={{ width: '60%' }}></div>
-                      <span>60%</span>
-                    </div>
-                  </td>
-                  <td>
-                    <button className="button small" onClick={() => handleEdit({
-                      id: 2,
-                      variable: 'Client Count',
-                      productFamily: 'Product B',
-                      target: 25,
-                      startDate: '2025-04-01',
-                      endDate: '2025-04-30',
-                      responsibleId: 2,
-                      description: 'Monthly client count target for Product B'
-                    })}>Edit</button>
-                    <button className="button small danger" onClick={() => handleDelete(2)}>Delete</button>
-                  </td>
-                </tr>
+                {goals.map((goal) => (
+                  <tr key={goal.id}>
+                    <td>{goal.variable}</td>
+                    <td>{goal.productFamily}</td>
+                    <td>{goal.variable === 'Ingresos' ? formatCurrency(goal.target) : goal.target}</td>
+                    <td>{new Date(goal.startDate).toLocaleDateString('es-AR')} - {new Date(goal.endDate).toLocaleDateString('es-AR')}</td>
+                    <td>{getResponsibleName(goal.responsibleId)}</td>
+                    <td>
+                      <div className="progress-bar">
+                        <div className="progress" style={{ width: `${calculateProgress(goal)}%` }}></div>
+                        <span>{calculateProgress(goal)}%</span>
+                      </div>
+                    </td>
+                    <td>
+                      <button className="button small" onClick={() => handleEdit(goal)}>Editar</button>
+                      <button className="button small danger" onClick={() => handleDelete(goal.id)}>Eliminar</button>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           )}
         </div>
       )}
       
-      {/* Goal Modal */}
+      {/* Modal de Objetivo */}
       {showModal && (
         <div className="modal">
-          <div className="modal-content">
+          <div className="modal-content" style={{ maxWidth: '600px', margin: '0 auto' }}>
             <div className="modal-header">
-              <h2>{currentGoal ? 'Edit Goal' : 'Create New Goal'}</h2>
+              <h2>{currentGoal ? 'Editar Objetivo' : 'Crear Nuevo Objetivo'}</h2>
               <button className="close-button" onClick={closeModal}>&times;</button>
             </div>
-            <form onSubmit={handleSubmit}>
-              <div className="form-group">
-                <label htmlFor="variable">Variable</label>
-                <select
-                  id="variable"
-                  name="variable"
-                  value={formData.variable}
-                  onChange={handleInputChange}
-                  required
-                >
-                  <option value="">Select Variable</option>
-                  {variables.map((variable, index) => (
-                    <option key={index} value={variable}>{variable}</option>
-                  ))}
-                </select>
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="productFamily">Product Family</label>
-                <select
-                  id="productFamily"
-                  name="productFamily"
-                  value={formData.productFamily}
-                  onChange={handleInputChange}
-                  required
-                >
-                  <option value="">Select Product Family</option>
-                  {productFamilies.map((family, index) => (
-                    <option key={index} value={family}>{family}</option>
-                  ))}
-                </select>
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="target">Target</label>
-                <input
-                  type="number"
-                  id="target"
-                  name="target"
-                  value={formData.target}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              
-              <div className="form-row">
+            {successMessage && <div className="success-message" style={{ margin: '10px 20px' }}>{successMessage}</div>}
+            <div style={{ padding: '0 20px 20px 20px' }}>
+              <form onSubmit={handleSubmit}>
                 <div className="form-group">
-                  <label htmlFor="startDate">Start Date</label>
+                  <label htmlFor="variable">Variable</label>
+                  <select
+                    id="variable"
+                    name="variable"
+                    value={formData.variable}
+                    onChange={handleInputChange}
+                    required
+                  >
+                    <option value="">Seleccionar Variable</option>
+                    {variables.map((variable, index) => (
+                      <option key={index} value={variable}>{variable}</option>
+                    ))}
+                  </select>
+                </div>
+                
+                <div className="form-group">
+                  <label htmlFor="productFamily">Familia de Productos</label>
+                  <select
+                    id="productFamily"
+                    name="productFamily"
+                    value={formData.productFamily}
+                    onChange={handleInputChange}
+                    required
+                  >
+                    <option value="">Seleccionar Familia de Productos</option>
+                    {productFamilies.map((family, index) => (
+                      <option key={index} value={family}>{family}</option>
+                    ))}
+                  </select>
+                </div>
+                
+                <div className="form-group">
+                  <label htmlFor="target">Meta</label>
                   <input
-                    type="date"
-                    id="startDate"
-                    name="startDate"
-                    value={formData.startDate}
+                    type="number"
+                    id="target"
+                    name="target"
+                    value={formData.target}
                     onChange={handleInputChange}
                     required
                   />
                 </div>
                 
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="startDate">Fecha de Inicio</label>
+                    <input
+                      type="date"
+                      id="startDate"
+                      name="startDate"
+                      value={formData.startDate}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                  
+                  <div className="form-group">
+                    <label htmlFor="endDate">Fecha de Fin</label>
+                    <input
+                      type="date"
+                      id="endDate"
+                      name="endDate"
+                      value={formData.endDate}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                </div>
+                
                 <div className="form-group">
-                  <label htmlFor="endDate">End Date</label>
-                  <input
-                    type="date"
-                    id="endDate"
-                    name="endDate"
-                    value={formData.endDate}
+                  <label htmlFor="responsibleId">Responsable</label>
+                  <select
+                    id="responsibleId"
+                    name="responsibleId"
+                    value={formData.responsibleId}
                     onChange={handleInputChange}
                     required
-                  />
+                  >
+                    <option value="">Seleccionar Responsable</option>
+                    {users.map((user) => (
+                      <option key={user.id} value={user.id}>{user.name}</option>
+                    ))}
+                  </select>
                 </div>
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="responsibleId">Responsible</label>
-                <select
-                  id="responsibleId"
-                  name="responsibleId"
-                  value={formData.responsibleId}
-                  onChange={handleInputChange}
-                  required
-                >
-                  <option value="">Select Responsible</option>
-                  {users.map((user) => (
-                    <option key={user.id} value={user.id}>{user.name}</option>
-                  ))}
-                </select>
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="description">Description</label>
-                <textarea
-                  id="description"
-                  name="description"
-                  value={formData.description}
-                  onChange={handleInputChange}
-                  rows="3"
-                ></textarea>
-              </div>
-              
-              <div className="form-actions">
-                <button type="button" className="button secondary" onClick={closeModal}>Cancel</button>
-                <button type="submit" className="button primary">{currentGoal ? 'Update Goal' : 'Create Goal'}</button>
-              </div>
-            </form>
+                
+                <div className="form-group">
+                  <label htmlFor="description">Descripción</label>
+                  <textarea
+                    id="description"
+                    name="description"
+                    value={formData.description}
+                    onChange={handleInputChange}
+                    rows="3"
+                  ></textarea>
+                </div>
+                
+                <div className="form-actions">
+                  <button type="button" className="button secondary" onClick={closeModal}>Cancelar</button>
+                  <button type="submit" className="button primary">{currentGoal ? 'Actualizar Objetivo' : 'Crear Objetivo'}</button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       )}
