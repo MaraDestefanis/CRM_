@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import strategyService from '../services/strategyService';
 import goalService from '../services/goalService';
 import clientService from '../services/clientService';
+import '../styles/Strategies.css';
 
 const Strategies = () => {
   const navigate = useNavigate();
@@ -157,21 +158,23 @@ const Strategies = () => {
   return (
     <div className="strategies-page">
       <div className="page-header">
-        <h1>Strategy Definition</h1>
+        <h1 className="page-title">Definición de Estrategias</h1>
         <div className="strategies-actions">
-          <button className="button primary" onClick={openModal}>Create New Strategy</button>
+          <button className="button primary" onClick={openModal}>
+            <i className="fas fa-plus-circle"></i> Crear Nueva Estrategia
+          </button>
         </div>
       </div>
       
       {error && <div className="error-message">{error}</div>}
       
       {loading ? (
-        <div className="loading">Loading strategies...</div>
+        <div className="loading">Cargando estrategias...</div>
       ) : (
         <div className="strategies-list">
-          <h2>Current Strategies</h2>
+          <h2>Estrategias Actuales</h2>
           {strategies.length === 0 ? (
-            <p>No strategies found. Create your first strategy to get started.</p>
+            <p>No se encontraron estrategias. Crea tu primera estrategia para comenzar.</p>
           ) : (
             <div className="strategies-grid">
               {strategies.map(strategy => (
@@ -189,9 +192,15 @@ const Strategies = () => {
                     <p><strong>Created:</strong> {new Date(strategy.createdAt).toLocaleDateString()}</p>
                   </div>
                   <div className="strategy-actions">
-                    <button className="button small" onClick={() => handleEdit(strategy)}>Edit</button>
-                    <button className="button small" onClick={() => handleViewTasks(strategy.id)}>View Tasks</button>
-                    <button className="button small danger" onClick={() => handleDelete(strategy.id)}>Delete</button>
+                    <button className="button small" onClick={() => handleEdit(strategy)}>
+                      <i className="fas fa-edit"></i> Editar
+                    </button>
+                    <button className="button small" onClick={() => handleViewTasks(strategy.id)}>
+                      <i className="fas fa-tasks"></i> Ver Tareas
+                    </button>
+                    <button className="button small danger" onClick={() => handleDelete(strategy.id)}>
+                      <i className="fas fa-trash"></i> Eliminar
+                    </button>
                   </div>
                 </div>
               ))}
@@ -205,12 +214,12 @@ const Strategies = () => {
         <div className="modal">
           <div className="modal-content">
             <div className="modal-header">
-              <h2>{currentStrategy ? 'Edit Strategy' : 'Create New Strategy'}</h2>
+              <h2>{currentStrategy ? 'Editar Estrategia' : 'Crear Nueva Estrategia'}</h2>
               <button className="close-button" onClick={closeModal}>&times;</button>
             </div>
             <form onSubmit={handleSubmit}>
               <div className="form-group">
-                <label htmlFor="name">Strategy Name</label>
+                <label htmlFor="name">Nombre de la Estrategia</label>
                 <input
                   type="text"
                   id="name"
@@ -222,7 +231,7 @@ const Strategies = () => {
               </div>
               
               <div className="form-group">
-                <label htmlFor="description">Description</label>
+                <label htmlFor="description">Descripción</label>
                 <textarea
                   id="description"
                   name="description"
@@ -235,7 +244,7 @@ const Strategies = () => {
               
               <div className="form-row">
                 <div className="form-group">
-                  <label htmlFor="goalId">Link to Goal</label>
+                  <label htmlFor="goalId">Vincular a Objetivo</label>
                   <select
                     id="goalId"
                     name="goalId"
@@ -253,7 +262,7 @@ const Strategies = () => {
                 </div>
                 
                 <div className="form-group">
-                  <label htmlFor="clientIds">Link to Client(s)</label>
+                  <label htmlFor="clientIds">Vincular a Cliente(s)</label>
                   <select
                     id="clientIds"
                     name="clientIds"
@@ -272,7 +281,7 @@ const Strategies = () => {
                 </div>
                 
                 <div className="form-group">
-                  <label htmlFor="state">State</label>
+                  <label htmlFor="state">Estado</label>
                   <select
                     id="state"
                     name="state"
@@ -280,18 +289,20 @@ const Strategies = () => {
                     onChange={handleInputChange}
                     required
                   >
-                    <option value="planned">Planned</option>
-                    <option value="in-progress">In Progress</option>
-                    <option value="paused">Paused</option>
-                    <option value="finished">Finished</option>
+                    <option value="planned">Planificada</option>
+                    <option value="in-progress">En Progreso</option>
+                    <option value="paused">Pausada</option>
+                    <option value="finished">Finalizada</option>
                   </select>
                 </div>
               </div>
               
               <div className="form-actions">
-                <button type="button" className="button secondary" onClick={closeModal}>Cancel</button>
+                <button type="button" className="button secondary" onClick={closeModal}>
+                  <i className="fas fa-times"></i> Cancelar
+                </button>
                 <button type="submit" className="button primary">
-                  {currentStrategy ? 'Update Strategy' : 'Create Strategy'}
+                  <i className="fas fa-save"></i> {currentStrategy ? 'Actualizar Estrategia' : 'Crear Estrategia'}
                 </button>
               </div>
             </form>
