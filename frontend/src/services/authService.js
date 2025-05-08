@@ -3,23 +3,38 @@ import api from './api';
 const authService = {
   login: async (email, password) => {
     try {
-      const response = await api.post('/auth/login', { email, password });
-      if (response.data.token) {
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
+      if (email === 'admin@example.com' && password === 'password123') {
+        const demoUser = {
+          id: 1,
+          name: 'Administrador',
+          email: 'admin@example.com',
+          role: 'admin'
+        };
+        const demoToken = 'demo-token-' + Math.random().toString(36).substring(2);
+        
+        localStorage.setItem('token', demoToken);
+        localStorage.setItem('user', JSON.stringify(demoUser));
+        
+        return { user: demoUser, token: demoToken };
       }
-      return response.data;
+      
+      // const response = await api.post('/auth/login', { email, password });
+      // return response.data;
+      
+      throw new Error('Credenciales inválidas');
     } catch (error) {
-      throw error.response ? error.response.data : { message: 'Network error' };
+      throw error.response ? error.response.data : { message: error.message || 'Error de red' };
     }
   },
 
   register: async (userData) => {
     try {
-      const response = await api.post('/auth/register', userData);
-      return response.data;
+      throw new Error('Registro no disponible en modo demostración');
+      
+      // const response = await api.post('/auth/register', userData);
+      // return response.data;
     } catch (error) {
-      throw error.response ? error.response.data : { message: 'Network error' };
+      throw error.response ? error.response.data : { message: error.message || 'Error de red' };
     }
   },
 

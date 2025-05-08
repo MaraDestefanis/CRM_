@@ -1,40 +1,79 @@
 import React from 'react';
+import '../styles/Dashboard.css';
 
 const Dashboard = () => {
   return (
     <div className="dashboard">
-      <h1>Dashboard</h1>
+      <h1 className="page-title">Panel Principal</h1>
+      
       <div className="dashboard-summary">
         <div className="summary-card">
-          <h3>Goals</h3>
-          <p>5 active goals</p>
-        </div>
-        <div className="summary-card">
-          <h3>Sales</h3>
-          <p>$10,000 this month</p>
-        </div>
-        <div className="summary-card">
-          <h3>Clients</h3>
-          <p>25 active clients</p>
-        </div>
-        <div className="summary-card">
-          <h3>Tasks</h3>
-          <p>12 pending tasks</p>
-        </div>
-      </div>
-      <div className="dashboard-charts">
-        <div className="chart">
-          <h3>Sales Performance</h3>
-          <div className="chart-placeholder">
-            {/* Chart will be implemented here */}
-            <p>Sales chart placeholder</p>
+          <div className="card-icon">
+            <i className="fas fa-bullseye"></i>
+          </div>
+          <div className="card-content">
+            <h3>Objetivos</h3>
+            <p className="card-value">5</p>
+            <p className="card-description">objetivos activos</p>
           </div>
         </div>
-        <div className="chart">
-          <h3>Goal Progress</h3>
-          <div className="chart-placeholder">
-            {/* Chart will be implemented here */}
-            <p>Goal progress chart placeholder</p>
+        
+        <div className="summary-card">
+          <div className="card-icon">
+            <i className="fas fa-chart-line"></i>
+          </div>
+          <div className="card-content">
+            <h3>Ventas</h3>
+            <p className="card-value">$10,000</p>
+            <p className="card-description">este mes</p>
+          </div>
+        </div>
+        
+        <div className="summary-card">
+          <div className="card-icon">
+            <i className="fas fa-users"></i>
+          </div>
+          <div className="card-content">
+            <h3>Clientes</h3>
+            <p className="card-value">25</p>
+            <p className="card-description">clientes activos</p>
+          </div>
+        </div>
+        
+        <div className="summary-card">
+          <div className="card-icon">
+            <i className="fas fa-tasks"></i>
+          </div>
+          <div className="card-content">
+            <h3>Tareas</h3>
+            <p className="card-value">12</p>
+            <p className="card-description">tareas pendientes</p>
+          </div>
+        </div>
+      </div>
+      
+      <div className="dashboard-charts">
+        <div className="chart-card">
+          <h3 className="chart-title">
+            <i className="fas fa-chart-bar"></i> Rendimiento de Ventas
+          </h3>
+          <div className="chart-content">
+            <div className="chart-placeholder">
+              <i className="fas fa-chart-line chart-icon"></i>
+              <p>Gráfico de ventas</p>
+            </div>
+          </div>
+        </div>
+        
+        <div className="chart-card">
+          <h3 className="chart-title">
+            <i className="fas fa-bullseye"></i> Progreso de Objetivos
+          </h3>
+          <div className="chart-content">
+            <div className="chart-placeholder">
+              <i className="fas fa-chart-pie chart-icon"></i>
+              <p>Gráfico de progreso</p>
+            </div>
           </div>
         </div>
       </div>

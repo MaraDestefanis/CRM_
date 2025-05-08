@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import clientService from '../services/clientService';
 import saleService from '../services/saleService';
 import goalService from '../services/goalService';
+import '../styles/Analysis.css';
 
 const Analysis = () => {
   const [selectedVariable, setSelectedVariable] = useState('revenue');
@@ -216,18 +217,18 @@ const Analysis = () => {
   return (
     <div className="analysis-page">
       <div className="page-header">
-        <h1>Sales Analysis</h1>
+        <h1 className="page-title">Análisis de Ventas</h1>
         <div className="variable-selector">
-          <label htmlFor="variable">Select Variable:</label>
+          <label htmlFor="variable">Seleccionar Variable:</label>
           <select 
             id="variable" 
             value={selectedVariable} 
             onChange={handleVariableChange}
           >
-            <option value="revenue">Revenue</option>
-            <option value="clientCount">Client Count</option>
-            <option value="newClients">New Clients</option>
-            <option value="nonRetainedClients">Non-Retained Clients</option>
+            <option value="revenue">Ingresos</option>
+            <option value="clientCount">Cantidad de Clientes</option>
+            <option value="newClients">Nuevos Clientes</option>
+            <option value="nonRetainedClients">Clientes No Retenidos</option>
           </select>
         </div>
       </div>
@@ -235,24 +236,24 @@ const Analysis = () => {
       {error && <div className="error-message">{error}</div>}
       
       {loading ? (
-        <div className="loading">Loading analysis data...</div>
+        <div className="loading">Cargando datos de análisis...</div>
       ) : (
         <>
           <div className="dashboard-section">
-            <h2>Dashboard</h2>
+            <h2>Panel de Control</h2>
             <div className="kpi-cards">
               {selectedVariable === 'revenue' && (
                 <>
                   <div className="kpi-card">
-                    <h3>Total Revenue</h3>
+                    <h3>Ingresos Totales</h3>
                     <p className="kpi-value">{formatCurrency(kpis.total)}</p>
                   </div>
                   <div className="kpi-card">
-                    <h3>% vs Goal</h3>
+                    <h3>% vs Objetivo</h3>
                     <p className="kpi-value">{kpis.vsGoal}%</p>
                   </div>
                   <div className="kpi-card">
-                    <h3>Monthly Growth</h3>
+                    <h3>Crecimiento Mensual</h3>
                     <p className={`kpi-value ${kpis.growth >= 0 ? 'positive' : 'negative'}`}>
                       {formatPercentage(kpis.growth)}
                     </p>
@@ -263,15 +264,15 @@ const Analysis = () => {
               {selectedVariable === 'clientCount' && (
                 <>
                   <div className="kpi-card">
-                    <h3>Current Clients</h3>
+                    <h3>Clientes Actuales</h3>
                     <p className="kpi-value">{kpis.total}</p>
                   </div>
                   <div className="kpi-card">
-                    <h3>Target</h3>
+                    <h3>Objetivo</h3>
                     <p className="kpi-value">{goals.find(g => g.variable === 'Client Count')?.target || 'N/A'}</p>
                   </div>
                   <div className="kpi-card">
-                    <h3>Completion</h3>
+                    <h3>Completado</h3>
                     <p className="kpi-value">{kpis.vsGoal}%</p>
                   </div>
                 </>
@@ -280,15 +281,15 @@ const Analysis = () => {
               {selectedVariable === 'newClients' && (
                 <>
                   <div className="kpi-card">
-                    <h3>New Clients</h3>
+                    <h3>Nuevos Clientes</h3>
                     <p className="kpi-value">{kpis.total}</p>
                   </div>
                   <div className="kpi-card">
-                    <h3>Target</h3>
+                    <h3>Objetivo</h3>
                     <p className="kpi-value">{goals.find(g => g.variable === 'New Clients')?.target || 'N/A'}</p>
                   </div>
                   <div className="kpi-card">
-                    <h3>% of Total</h3>
+                    <h3>% del Total</h3>
                     <p className="kpi-value">
                       {clients.length ? Math.round((kpis.total / clients.length) * 100) : 0}%
                     </p>
@@ -299,17 +300,17 @@ const Analysis = () => {
               {selectedVariable === 'nonRetainedClients' && (
                 <>
                   <div className="kpi-card">
-                    <h3>Non-Retained</h3>
+                    <h3>No Retenidos</h3>
                     <p className="kpi-value">{kpis.total}</p>
                   </div>
                   <div className="kpi-card">
-                    <h3>Retention Rate</h3>
+                    <h3>Tasa de Retención</h3>
                     <p className="kpi-value">
                       {clients.length ? Math.round(((clients.length - kpis.total) / clients.length) * 100) : 0}%
                     </p>
                   </div>
                   <div className="kpi-card">
-                    <h3>Monthly Change</h3>
+                    <h3>Cambio Mensual</h3>
                     <p className={`kpi-value ${kpis.growth >= 0 ? 'negative' : 'positive'}`}>
                       {formatPercentage(kpis.growth)}
                     </p>
@@ -319,19 +320,22 @@ const Analysis = () => {
             </div>
             
             <div className="chart-container">
-              <h3>{selectedVariable === 'revenue' ? 'Revenue Trend' : 
-                   selectedVariable === 'clientCount' ? 'Client Evolution' :
-                   selectedVariable === 'newClients' ? 'New Clients Acquisition' :
-                   'Client Retention Trends'}</h3>
+              <h3>{selectedVariable === 'revenue' ? 'Tendencia de Ingresos' : 
+                   selectedVariable === 'clientCount' ? 'Evolución de Clientes' :
+                   selectedVariable === 'newClients' ? 'Adquisición de Nuevos Clientes' :
+                   'Tendencias de Retención de Clientes'}</h3>
               <div className="chart-placeholder">
                 {/* In a real implementation, we would use a charting library like Chart.js or Recharts */}
-                <p>{selectedVariable} chart would be displayed here</p>
+                <p>El gráfico de {selectedVariable === 'revenue' ? 'ingresos' : 
+                   selectedVariable === 'clientCount' ? 'clientes' :
+                   selectedVariable === 'newClients' ? 'nuevos clientes' :
+                   'retención de clientes'} se mostraría aquí</p>
               </div>
             </div>
           </div>
           
           <div className="table-section">
-            <h2>Detailed Analysis</h2>
+            <h2>Análisis Detallado</h2>
             
             <div className="active-filters">
               {filters.map((filter, index) => (
@@ -343,71 +347,77 @@ const Analysis = () => {
             </div>
             
             <div className="table-controls">
-              <button className="button" onClick={() => setShowColumnModal(true)}>Configure Columns</button>
-              <button className="button" onClick={() => setShowFilterModal(true)}>Add Filter</button>
-              <button className="button" onClick={exportData}>Export</button>
+              <button className="button" onClick={() => setShowColumnModal(true)}>
+                <i className="fas fa-columns"></i> Configurar Columnas
+              </button>
+              <button className="button" onClick={() => setShowFilterModal(true)}>
+                <i className="fas fa-filter"></i> Añadir Filtro
+              </button>
+              <button className="button" onClick={exportData}>
+                <i className="fas fa-download"></i> Exportar
+              </button>
             </div>
             
             <div className="table-container">
               <table className="analysis-table">
                 <thead>
                   <tr>
-                    {visibleColumns.includes('client') && <th>Client</th>}
+                    {visibleColumns.includes('client') && <th>Cliente</th>}
                     {visibleColumns.includes('i1') && <th>I1</th>}
                     {visibleColumns.includes('i2') && <th>I2</th>}
                     {visibleColumns.includes('i3') && <th>I3</th>}
                     {visibleColumns.includes('i4') && <th>I4</th>}
-                    {visibleColumns.includes('abcClass') && <th>ABC Class</th>}
-                    {visibleColumns.includes('category') && <th>Category</th>}
-                    {visibleColumns.includes('reason') && <th>Reason</th>}
-                    <th>Actions</th>
+                    {visibleColumns.includes('abcClass') && <th>Clase ABC</th>}
+                    {visibleColumns.includes('category') && <th>Categoría</th>}
+                    {visibleColumns.includes('reason') && <th>Razón</th>}
+                    <th>Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
                   {/* For demo purposes, we'll use static data until the backend is fully connected */}
                   <tr>
-                    {visibleColumns.includes('client') && <td>Client A</td>}
+                    {visibleColumns.includes('client') && <td>Cliente A</td>}
                     {visibleColumns.includes('i1') && <td>{formatCurrency(5000)}</td>}
                     {visibleColumns.includes('i2') && <td className="positive">+15%</td>}
                     {visibleColumns.includes('i3') && <td className="positive">+8%</td>}
                     {visibleColumns.includes('i4') && <td className="positive">+20%</td>}
                     {visibleColumns.includes('abcClass') && <td>A</td>}
-                    {visibleColumns.includes('category') && <td>Retained</td>}
-                    {visibleColumns.includes('reason') && <td>Satisfied</td>}
+                    {visibleColumns.includes('category') && <td>Retenido</td>}
+                    {visibleColumns.includes('reason') && <td>Satisfecho</td>}
                     <td>
                       <button 
                         className="button small"
                         onClick={() => handleEditCategory({
                           id: 1,
-                          name: 'Client A',
-                          category: 'Retained',
-                          reason: 'Satisfied'
+                          name: 'Cliente A',
+                          category: 'Retenido',
+                          reason: 'Satisfecho'
                         })}
                       >
-                        Edit
+                        <i className="fas fa-edit"></i> Editar
                       </button>
                     </td>
                   </tr>
                   <tr>
-                    {visibleColumns.includes('client') && <td>Client B</td>}
+                    {visibleColumns.includes('client') && <td>Cliente B</td>}
                     {visibleColumns.includes('i1') && <td>{formatCurrency(3200)}</td>}
                     {visibleColumns.includes('i2') && <td className="negative">-5%</td>}
                     {visibleColumns.includes('i3') && <td className="negative">-10%</td>}
                     {visibleColumns.includes('i4') && <td className="positive">+5%</td>}
                     {visibleColumns.includes('abcClass') && <td>B</td>}
-                    {visibleColumns.includes('category') && <td>With Issues</td>}
-                    {visibleColumns.includes('reason') && <td>Price concerns</td>}
+                    {visibleColumns.includes('category') && <td>Con Problemas</td>}
+                    {visibleColumns.includes('reason') && <td>Problemas de precio</td>}
                     <td>
                       <button 
                         className="button small"
                         onClick={() => handleEditCategory({
                           id: 2,
-                          name: 'Client B',
-                          category: 'With Issues',
-                          reason: 'Price concerns'
+                          name: 'Cliente B',
+                          category: 'Con Problemas',
+                          reason: 'Problemas de precio'
                         })}
                       >
-                        Edit
+                        <i className="fas fa-edit"></i> Editar
                       </button>
                     </td>
                   </tr>
@@ -423,7 +433,7 @@ const Analysis = () => {
         <div className="modal">
           <div className="modal-content">
             <div className="modal-header">
-              <h2>Configure Columns</h2>
+              <h2>Configurar Columnas</h2>
               <button className="close-button" onClick={() => setShowColumnModal(false)}>&times;</button>
             </div>
             <div className="column-options">
@@ -434,7 +444,7 @@ const Analysis = () => {
                   checked={visibleColumns.includes('client')} 
                   onChange={() => handleColumnToggle('client')}
                 />
-                <label htmlFor="col-client">Client</label>
+                <label htmlFor="col-client">Cliente</label>
               </div>
               <div className="column-option">
                 <input 
@@ -479,7 +489,7 @@ const Analysis = () => {
                   checked={visibleColumns.includes('abcClass')} 
                   onChange={() => handleColumnToggle('abcClass')}
                 />
-                <label htmlFor="col-abcClass">ABC Class</label>
+                <label htmlFor="col-abcClass">Clase ABC</label>
               </div>
               <div className="column-option">
                 <input 
@@ -488,7 +498,7 @@ const Analysis = () => {
                   checked={visibleColumns.includes('category')} 
                   onChange={() => handleColumnToggle('category')}
                 />
-                <label htmlFor="col-category">Category</label>
+                <label htmlFor="col-category">Categoría</label>
               </div>
               <div className="column-option">
                 <input 
@@ -497,11 +507,13 @@ const Analysis = () => {
                   checked={visibleColumns.includes('reason')} 
                   onChange={() => handleColumnToggle('reason')}
                 />
-                <label htmlFor="col-reason">Reason</label>
+                <label htmlFor="col-reason">Razón</label>
               </div>
             </div>
             <div className="modal-footer">
-              <button className="button primary" onClick={() => setShowColumnModal(false)}>Apply</button>
+              <button className="button primary" onClick={() => setShowColumnModal(false)}>
+                <i className="fas fa-check"></i> Aplicar
+              </button>
             </div>
           </div>
         </div>
@@ -512,7 +524,7 @@ const Analysis = () => {
         <div className="modal">
           <div className="modal-content">
             <div className="modal-header">
-              <h2>Add Filter</h2>
+              <h2>Añadir Filtro</h2>
               <button className="close-button" onClick={() => setShowFilterModal(false)}>&times;</button>
             </div>
             <form onSubmit={(e) => {
@@ -523,34 +535,34 @@ const Analysis = () => {
               handleAddFilter({ column, operator, value });
             }}>
               <div className="form-group">
-                <label htmlFor="column">Column</label>
+                <label htmlFor="column">Columna</label>
                 <select id="column" name="column" required>
-                  <option value="client">Client</option>
+                  <option value="client">Cliente</option>
                   <option value="i1">I1</option>
                   <option value="i2">I2</option>
                   <option value="i3">I3</option>
                   <option value="i4">I4</option>
-                  <option value="abcClass">ABC Class</option>
-                  <option value="category">Category</option>
-                  <option value="reason">Reason</option>
+                  <option value="abcClass">Clase ABC</option>
+                  <option value="category">Categoría</option>
+                  <option value="reason">Razón</option>
                 </select>
               </div>
               <div className="form-group">
-                <label htmlFor="operator">Operator</label>
+                <label htmlFor="operator">Operador</label>
                 <select id="operator" name="operator" required>
-                  <option value="equals">Equals</option>
-                  <option value="contains">Contains</option>
-                  <option value="greaterThan">Greater Than</option>
-                  <option value="lessThan">Less Than</option>
+                  <option value="equals">Igual a</option>
+                  <option value="contains">Contiene</option>
+                  <option value="greaterThan">Mayor que</option>
+                  <option value="lessThan">Menor que</option>
                 </select>
               </div>
               <div className="form-group">
-                <label htmlFor="value">Value</label>
+                <label htmlFor="value">Valor</label>
                 <input type="text" id="value" name="value" required />
               </div>
               <div className="form-actions">
-                <button type="button" className="button secondary" onClick={() => setShowFilterModal(false)}>Cancel</button>
-                <button type="submit" className="button primary">Add Filter</button>
+                <button type="button" className="button secondary" onClick={() => setShowFilterModal(false)}>Cancelar</button>
+                <button type="submit" className="button primary">Añadir Filtro</button>
               </div>
             </form>
           </div>
@@ -562,7 +574,7 @@ const Analysis = () => {
         <div className="modal">
           <div className="modal-content">
             <div className="modal-header">
-              <h2>Edit Client Category</h2>
+              <h2>Editar Categoría de Cliente</h2>
               <button className="close-button" onClick={() => {
                 setShowCategoryModal(false);
                 setEditingClient(null);
@@ -578,7 +590,7 @@ const Analysis = () => {
                 <h3>{editingClient.name}</h3>
               </div>
               <div className="form-group">
-                <label htmlFor="category">Category</label>
+                <label htmlFor="category">Categoría</label>
                 <select 
                   id="category" 
                   name="category" 
@@ -591,7 +603,7 @@ const Analysis = () => {
                 </select>
               </div>
               <div className="form-group">
-                <label htmlFor="reason">Reason</label>
+                <label htmlFor="reason">Razón</label>
                 <select 
                   id="reason" 
                   name="reason" 
@@ -600,15 +612,15 @@ const Analysis = () => {
                 >
                   {reasons[editingClient.category]?.map((reason, index) => (
                     <option key={index} value={reason}>{reason}</option>
-                  )) || <option value="">Select a category first</option>}
+                  )) || <option value="">Seleccione una categoría primero</option>}
                 </select>
               </div>
               <div className="form-actions">
                 <button type="button" className="button secondary" onClick={() => {
                   setShowCategoryModal(false);
                   setEditingClient(null);
-                }}>Cancel</button>
-                <button type="submit" className="button primary">Save Changes</button>
+                }}>Cancelar</button>
+                <button type="submit" className="button primary">Guardar Cambios</button>
               </div>
             </form>
           </div>
