@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import './App.css';
 
 import Login from './pages/Login';
@@ -15,20 +15,32 @@ import Sidebar from './components/Sidebar';
 
 import authService from './services/authService';
 
-const ProtectedRoute = ({ children }) => {
-  if (!authService.isAuthenticated()) {
-    return <Navigate to="/login" replace />;
-  }
-  return children;
+const ProtectedLayout = ({ user, onLogout }) => {
+  return (
+    <>
+      <Navbar user={user} onLogout={onLogout} />
+      <div className="content-wrapper">
+        <Sidebar />
+        <main className="main-content">
+          <Outlet />
+        </main>
+      </div>
+    </>
+  );
 };
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(authService.isAuthenticated());
-  const [user, setUser] = useState(authService.getCurrentUser());
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState(null);
   
   useEffect(() => {
-    setIsAuthenticated(authService.isAuthenticated());
-    setUser(authService.getCurrentUser());
+    const token = localStorage.getItem('token');
+    const userData = localStorage.getItem('user');
+    
+    if (token && userData) {
+      setIsAuthenticated(true);
+      setUser(JSON.parse(userData));
+    }
   }, []);
   
   const handleLogin = async (credentials) => {
@@ -38,13 +50,14 @@ function App() {
       setUser(authService.getCurrentUser());
       return true;
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('Error de inicio de sesión:', error);
       return false;
     }
   };
   
   const handleLogout = () => {
-    authService.logout();
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
     setIsAuthenticated(false);
     setUser(null);
   };
@@ -52,55 +65,28 @@ function App() {
   return (
     <Router>
       <div className="app">
-        {isAuthenticated && (
-          <>
-            <Navbar user={user} onLogout={handleLogout} />
-            <div className="content-wrapper">
-              <Sidebar />
-              <main className="main-content">
-                <Routes>
-                  <Route path="/dashboard" element={
-                    <ProtectedRoute>
-                      <Dashboard />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/goals" element={
-                    <ProtectedRoute>
-                      <Goals />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/analysis" element={
-                    <ProtectedRoute>
-                      <Analysis />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/strategies" element={
-                    <ProtectedRoute>
-                      <Strategies />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/tasks" element={
-                    <ProtectedRoute>
-                      <Tasks />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/control" element={
-                    <ProtectedRoute>
-                      <Control />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="*" element={<Navigate to="/dashboard" replace />} />
-                </Routes>
-              </main>
-            </div>
-          </>
-        )}
-        {!isAuthenticated && (
-          <Routes>
-            <Route path="/login" element={<Login onLogin={handleLogin} />} />
-            <Route path="*" element={<Navigate to="/login" replace />} />
-          </Routes>
-        )}
+        <Routes>
+          <Route path="/login" element={
+            isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login onLogin={handleLogin} />
+          } />
+          
+          <Route 
+            element={
+              isAuthenticated ? 
+                <ProtectedLayout user={user} onLogout={handleLogout} /> : 
+                <Navigate to="/login" replace />
+            }
+          >
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/goals" element={<Goals />} />
+            <Route path="/analysis" element={<Analysis />} />
+            <Route path="/strategies" element={<Strategies />} />
+            <Route path="/tasks" element={<Tasks />} />
+            <Route path="/control" element={<Control />} />
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          </Route>
+        </Routes>
       </div>
     </Router>
   );

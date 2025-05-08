@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import '../styles/Login.css';
 
 const Login = ({ onLogin }) => {
   const navigate = useNavigate();
@@ -28,10 +29,10 @@ const Login = ({ onLogin }) => {
       if (success) {
         navigate('/dashboard');
       } else {
-        setError('Invalid email or password');
+        setError('Correo o contraseña inválidos');
       }
     } catch (error) {
-      setError(error.message || 'Authentication failed. Please try again.');
+      setError(error.message || 'Autenticación fallida. Por favor intente nuevamente.');
     } finally {
       setLoading(false);
     }
@@ -40,12 +41,12 @@ const Login = ({ onLogin }) => {
   return (
     <div className="login-container">
       <div className="login-form-container">
-        <h1 className="login-title">CRM System</h1>
-        <p className="login-subtitle">Commercial Management System</p>
+        <h1 className="login-title">Sistema CRM</h1>
+        <p className="login-subtitle">Sistema de Gestión Comercial</p>
         <form className="login-form" onSubmit={handleSubmit}>
           {error && <div className="error-message">{error}</div>}
           <div className="form-group">
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email">Correo Electrónico</label>
             <input
               type="email"
               id="email"
@@ -54,10 +55,11 @@ const Login = ({ onLogin }) => {
               onChange={handleChange}
               disabled={loading}
               required
+              placeholder="Ingrese su correo electrónico"
             />
           </div>
           <div className="form-group">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">Contraseña</label>
             <input
               type="password"
               id="password"
@@ -66,6 +68,7 @@ const Login = ({ onLogin }) => {
               onChange={handleChange}
               disabled={loading}
               required
+              placeholder="Ingrese su contraseña"
             />
           </div>
           <button 
@@ -73,12 +76,12 @@ const Login = ({ onLogin }) => {
             className="login-button"
             disabled={loading}
           >
-            {loading ? 'Logging in...' : 'Login'}
+            {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
           </button>
         </form>
         <div className="login-info">
-          <p>Demo Credentials:</p>
-          <p>Admin: admin@example.com / admin123</p>
+          <p>Credenciales de Demostración:</p>
+          <p>Admin: admin@example.com / password123</p>
         </div>
       </div>
     </div>
