@@ -4,6 +4,7 @@ import taskService from '../services/taskService';
 import strategyService from '../services/strategyService';
 import commentService from '../services/commentService';
 import authService from '../services/authService';
+import '../styles/Tasks.css';
 
 const Tasks = () => {
   const location = useLocation();
@@ -239,20 +240,24 @@ const Tasks = () => {
   return (
     <div className="tasks-page">
       <div className="page-header">
-        <h1>Task Planning &amp; Tracking</h1>
+        <h1 className="page-title">Planificación y Seguimiento de Tareas</h1>
         {filteredStrategyId && (
           <div className="filter-info">
-            <p>Filtered by Strategy: {getStrategyName(filteredStrategyId)}</p>
+            <p>Filtrado por Estrategia: {getStrategyName(filteredStrategyId)}</p>
             <button className="button small" onClick={() => {
               setFilteredStrategyId(null);
               navigate('/tasks');
-            }}>Clear Filter</button>
+            }}>
+              <i className="fas fa-times-circle"></i> Quitar Filtro
+            </button>
           </div>
         )}
         <div className="tasks-actions">
-          <button className="button primary" onClick={openModal}>Create New Task</button>
+          <button className="button primary" onClick={openModal}>
+            <i className="fas fa-plus-circle"></i> Crear Nueva Tarea
+          </button>
           <button className="button" onClick={toggleViewMode}>
-            Switch to {viewMode === 'kanban' ? 'Calendar' : 'Kanban'} View
+            <i className="fas fa-exchange-alt"></i> Cambiar a Vista {viewMode === 'kanban' ? 'Calendario' : 'Kanban'}
           </button>
         </div>
       </div>
@@ -260,105 +265,138 @@ const Tasks = () => {
       {error && <div className="error-message">{error}</div>}
       
       {loading ? (
-        <div className="loading">Loading tasks...</div>
+        <div className="loading">Cargando tareas...</div>
       ) : (
         <>
           {viewMode === 'kanban' ? (
             <div className="kanban-board">
               <div className="kanban-column">
-                <h2>To Do</h2>
+                <h2>Por Hacer</h2>
                 {filteredTasks
                   .filter(task => task.status === 'todo')
                   .map(task => (
                     <div key={task.id} className={`task-card priority-${task.priority}`}>
                       <div className="task-header">
                         <h3>{task.title}</h3>
-                        <span className="task-priority">{task.priority}</span>
+                        <span className="task-priority">
+                          {task.priority === 'high' ? 'Alta' : 
+                           task.priority === 'medium' ? 'Media' : 'Baja'}
+                        </span>
                       </div>
                       <p className="task-description">{task.description}</p>
                       <div className="task-details">
-                        <p><strong>Due:</strong> {formatDate(task.dueDate)}</p>
-                        <p><strong>Assigned to:</strong> {getUserName(task.assignedTo)}</p>
-                        <p><strong>Strategy:</strong> {getStrategyName(task.strategyId)}</p>
+                        <p><strong>Vencimiento:</strong> {formatDate(task.dueDate)}</p>
+                        <p><strong>Asignado a:</strong> {getUserName(task.assignedTo)}</p>
+                        <p><strong>Estrategia:</strong> {getStrategyName(task.strategyId)}</p>
                         {task.recurrence !== 'none' && (
-                          <p><strong>Recurrence:</strong> {task.recurrence}</p>
+                          <p><strong>Recurrencia:</strong> {task.recurrence === 'daily' ? 'Diaria' : 
+                                                          task.recurrence === 'weekly' ? 'Semanal' : 
+                                                          task.recurrence === 'monthly' ? 'Mensual' : 
+                                                          task.recurrence === 'yearly' ? 'Anual' : 
+                                                          task.recurrence}</p>
                         )}
                       </div>
                       <div className="task-actions">
-                        <button className="button small" onClick={() => handleEdit(task)}>Edit</button>
+                        <button className="button small" onClick={() => handleEdit(task)}>
+                          <i className="fas fa-edit"></i> Editar
+                        </button>
                         <button className="button small" onClick={() => handleStatusChange(task.id, 'in-progress')}>
-                          Move to In Progress
+                          <i className="fas fa-arrow-right"></i> Mover a En Progreso
                         </button>
                         <button className="button small" onClick={() => handleViewComments(task.id)}>
-                          Comments
+                          <i className="fas fa-comments"></i> Comentarios
                         </button>
-                        <button className="button small danger" onClick={() => handleDelete(task.id)}>Delete</button>
+                        <button className="button small danger" onClick={() => handleDelete(task.id)}>
+                          <i className="fas fa-trash"></i> Eliminar
+                        </button>
                       </div>
                     </div>
                   ))}
               </div>
               
               <div className="kanban-column">
-                <h2>In Progress</h2>
+                <h2>En Progreso</h2>
                 {filteredTasks
                   .filter(task => task.status === 'in-progress')
                   .map(task => (
                     <div key={task.id} className={`task-card priority-${task.priority}`}>
                       <div className="task-header">
                         <h3>{task.title}</h3>
-                        <span className="task-priority">{task.priority}</span>
+                        <span className="task-priority">
+                          {task.priority === 'high' ? 'Alta' : 
+                           task.priority === 'medium' ? 'Media' : 'Baja'}
+                        </span>
                       </div>
                       <p className="task-description">{task.description}</p>
                       <div className="task-details">
-                        <p><strong>Due:</strong> {formatDate(task.dueDate)}</p>
-                        <p><strong>Assigned to:</strong> {getUserName(task.assignedTo)}</p>
-                        <p><strong>Strategy:</strong> {getStrategyName(task.strategyId)}</p>
+                        <p><strong>Vencimiento:</strong> {formatDate(task.dueDate)}</p>
+                        <p><strong>Asignado a:</strong> {getUserName(task.assignedTo)}</p>
+                        <p><strong>Estrategia:</strong> {getStrategyName(task.strategyId)}</p>
                         {task.recurrence !== 'none' && (
-                          <p><strong>Recurrence:</strong> {task.recurrence}</p>
+                          <p><strong>Recurrencia:</strong> {task.recurrence === 'daily' ? 'Diaria' : 
+                                                          task.recurrence === 'weekly' ? 'Semanal' : 
+                                                          task.recurrence === 'monthly' ? 'Mensual' : 
+                                                          task.recurrence === 'yearly' ? 'Anual' : 
+                                                          task.recurrence}</p>
                         )}
                       </div>
                       <div className="task-actions">
-                        <button className="button small" onClick={() => handleEdit(task)}>Edit</button>
+                        <button className="button small" onClick={() => handleEdit(task)}>
+                          <i className="fas fa-edit"></i> Editar
+                        </button>
                         <button className="button small" onClick={() => handleStatusChange(task.id, 'done')}>
-                          Move to Done
+                          <i className="fas fa-check-circle"></i> Mover a Completadas
                         </button>
                         <button className="button small" onClick={() => handleViewComments(task.id)}>
-                          Comments
+                          <i className="fas fa-comments"></i> Comentarios
                         </button>
-                        <button className="button small danger" onClick={() => handleDelete(task.id)}>Delete</button>
+                        <button className="button small danger" onClick={() => handleDelete(task.id)}>
+                          <i className="fas fa-trash"></i> Eliminar
+                        </button>
                       </div>
                     </div>
                   ))}
               </div>
               
               <div className="kanban-column">
-                <h2>Done</h2>
+                <h2>Completadas</h2>
                 {filteredTasks
                   .filter(task => task.status === 'done')
                   .map(task => (
                     <div key={task.id} className={`task-card priority-${task.priority}`}>
                       <div className="task-header">
                         <h3>{task.title}</h3>
-                        <span className="task-priority">{task.priority}</span>
+                        <span className="task-priority">
+                          {task.priority === 'high' ? 'Alta' : 
+                           task.priority === 'medium' ? 'Media' : 'Baja'}
+                        </span>
                       </div>
                       <p className="task-description">{task.description}</p>
                       <div className="task-details">
-                        <p><strong>Due:</strong> {formatDate(task.dueDate)}</p>
-                        <p><strong>Assigned to:</strong> {getUserName(task.assignedTo)}</p>
-                        <p><strong>Strategy:</strong> {getStrategyName(task.strategyId)}</p>
+                        <p><strong>Vencimiento:</strong> {formatDate(task.dueDate)}</p>
+                        <p><strong>Asignado a:</strong> {getUserName(task.assignedTo)}</p>
+                        <p><strong>Estrategia:</strong> {getStrategyName(task.strategyId)}</p>
                         {task.recurrence !== 'none' && (
-                          <p><strong>Recurrence:</strong> {task.recurrence}</p>
+                          <p><strong>Recurrencia:</strong> {task.recurrence === 'daily' ? 'Diaria' : 
+                                                          task.recurrence === 'weekly' ? 'Semanal' : 
+                                                          task.recurrence === 'monthly' ? 'Mensual' : 
+                                                          task.recurrence === 'yearly' ? 'Anual' : 
+                                                          task.recurrence}</p>
                         )}
                         {task.recurrence !== 'none' && (
-                          <p><strong>Next Occurrence:</strong> {formatDate(task.nextOccurrence)}</p>
+                          <p><strong>Próxima Ocurrencia:</strong> {formatDate(task.nextOccurrence)}</p>
                         )}
                       </div>
                       <div className="task-actions">
-                        <button className="button small" onClick={() => handleEdit(task)}>Edit</button>
-                        <button className="button small" onClick={() => handleViewComments(task.id)}>
-                          Comments
+                        <button className="button small" onClick={() => handleEdit(task)}>
+                          <i className="fas fa-edit"></i> Editar
                         </button>
-                        <button className="button small danger" onClick={() => handleDelete(task.id)}>Delete</button>
+                        <button className="button small" onClick={() => handleViewComments(task.id)}>
+                          <i className="fas fa-comments"></i> Comentarios
+                        </button>
+                        <button className="button small danger" onClick={() => handleDelete(task.id)}>
+                          <i className="fas fa-trash"></i> Eliminar
+                        </button>
                       </div>
                     </div>
                   ))}
@@ -366,11 +404,11 @@ const Tasks = () => {
             </div>
           ) : (
             <div className="calendar-view">
-              <h2>Calendar View</h2>
-              <p>Calendar implementation placeholder</p>
+              <h2>Vista de Calendario</h2>
+              <p>Implementación de calendario en desarrollo</p>
               <div className="calendar-placeholder">
-                {/* In a real implementation, we would use a calendar library like FullCalendar */}
-                <p>Tasks would be displayed on a calendar based on their due dates</p>
+                {/* En una implementación real, usaríamos una biblioteca de calendario como FullCalendar */}
+                <p>Las tareas se mostrarían en un calendario basado en sus fechas de vencimiento</p>
               </div>
             </div>
           )}
