@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import goalService from '../services/goalService';
 import authService from '../services/authService';
+import '../styles/Goals.css';
 
 const Goals = () => {
   const [goals, setGoals] = useState([]);
@@ -143,42 +144,44 @@ const Goals = () => {
   return (
     <div className="goals-page">
       <div className="page-header">
-        <h1>Goal Management</h1>
+        <h1 className="page-title">Gestión de Objetivos</h1>
         <div className="goals-actions">
-          <button className="button primary" onClick={openModal}>Create New Goal</button>
+          <button className="button primary" onClick={openModal}>
+            <i className="fas fa-plus-circle"></i> Crear Nuevo Objetivo
+          </button>
         </div>
       </div>
       
       {error && <div className="error-message">{error}</div>}
       
       {loading ? (
-        <div className="loading">Loading goals...</div>
+        <div className="loading">Cargando objetivos...</div>
       ) : (
         <div className="goals-list">
-          <h2>Current Goals</h2>
+          <h2>Objetivos Actuales</h2>
           {goals.length === 0 ? (
-            <p>No goals found. Create your first goal to get started.</p>
+            <p>No se encontraron objetivos. Crea tu primer objetivo para comenzar.</p>
           ) : (
             <table className="goals-table">
               <thead>
                 <tr>
                   <th>Variable</th>
-                  <th>Product Family</th>
-                  <th>Target</th>
-                  <th>Period</th>
-                  <th>Responsible</th>
-                  <th>Progress</th>
-                  <th>Actions</th>
+                  <th>Familia de Productos</th>
+                  <th>Meta</th>
+                  <th>Período</th>
+                  <th>Responsable</th>
+                  <th>Progreso</th>
+                  <th>Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 {/* For demo purposes, we'll use static data until the backend is fully connected */}
                 <tr>
-                  <td>Revenue</td>
-                  <td>Product A</td>
+                  <td>Ingresos</td>
+                  <td>Producto A</td>
                   <td>{formatCurrency(10000)}</td>
-                  <td>April 2025</td>
-                  <td>John Doe</td>
+                  <td>Abril 2025</td>
+                  <td>Juan Pérez</td>
                   <td>
                     <div className="progress-bar">
                       <div className="progress" style={{ width: '75%' }}></div>
@@ -194,17 +197,21 @@ const Goals = () => {
                       startDate: '2025-04-01',
                       endDate: '2025-04-30',
                       responsibleId: 1,
-                      description: 'Monthly revenue target for Product A'
-                    })}>Edit</button>
-                    <button className="button small danger" onClick={() => handleDelete(1)}>Delete</button>
+                      description: 'Meta mensual de ingresos para Producto A'
+                    })}>
+                      <i className="fas fa-edit"></i> Editar
+                    </button>
+                    <button className="button small danger" onClick={() => handleDelete(1)}>
+                      <i className="fas fa-trash"></i> Eliminar
+                    </button>
                   </td>
                 </tr>
                 <tr>
-                  <td>Client Count</td>
-                  <td>Product B</td>
+                  <td>Cantidad de Clientes</td>
+                  <td>Producto B</td>
                   <td>25</td>
-                  <td>April 2025</td>
-                  <td>Jane Smith</td>
+                  <td>Abril 2025</td>
+                  <td>María López</td>
                   <td>
                     <div className="progress-bar">
                       <div className="progress" style={{ width: '60%' }}></div>
@@ -220,9 +227,13 @@ const Goals = () => {
                       startDate: '2025-04-01',
                       endDate: '2025-04-30',
                       responsibleId: 2,
-                      description: 'Monthly client count target for Product B'
-                    })}>Edit</button>
-                    <button className="button small danger" onClick={() => handleDelete(2)}>Delete</button>
+                      description: 'Meta mensual de clientes para Producto B'
+                    })}>
+                      <i className="fas fa-edit"></i> Editar
+                    </button>
+                    <button className="button small danger" onClick={() => handleDelete(2)}>
+                      <i className="fas fa-trash"></i> Eliminar
+                    </button>
                   </td>
                 </tr>
               </tbody>
@@ -236,7 +247,7 @@ const Goals = () => {
         <div className="modal">
           <div className="modal-content">
             <div className="modal-header">
-              <h2>{currentGoal ? 'Edit Goal' : 'Create New Goal'}</h2>
+              <h2>{currentGoal ? 'Editar Objetivo' : 'Crear Nuevo Objetivo'}</h2>
               <button className="close-button" onClick={closeModal}>&times;</button>
             </div>
             <form onSubmit={handleSubmit}>
@@ -249,7 +260,7 @@ const Goals = () => {
                   onChange={handleInputChange}
                   required
                 >
-                  <option value="">Select Variable</option>
+                  <option value="">Seleccionar Variable</option>
                   {variables.map((variable, index) => (
                     <option key={index} value={variable}>{variable}</option>
                   ))}
@@ -257,7 +268,7 @@ const Goals = () => {
               </div>
               
               <div className="form-group">
-                <label htmlFor="productFamily">Product Family</label>
+                <label htmlFor="productFamily">Familia de Productos</label>
                 <select
                   id="productFamily"
                   name="productFamily"
@@ -265,7 +276,7 @@ const Goals = () => {
                   onChange={handleInputChange}
                   required
                 >
-                  <option value="">Select Product Family</option>
+                  <option value="">Seleccionar Familia de Productos</option>
                   {productFamilies.map((family, index) => (
                     <option key={index} value={family}>{family}</option>
                   ))}
@@ -273,7 +284,7 @@ const Goals = () => {
               </div>
               
               <div className="form-group">
-                <label htmlFor="target">Target</label>
+                <label htmlFor="target">Meta</label>
                 <input
                   type="number"
                   id="target"
@@ -286,7 +297,7 @@ const Goals = () => {
               
               <div className="form-row">
                 <div className="form-group">
-                  <label htmlFor="startDate">Start Date</label>
+                  <label htmlFor="startDate">Fecha de Inicio</label>
                   <input
                     type="date"
                     id="startDate"
@@ -298,7 +309,7 @@ const Goals = () => {
                 </div>
                 
                 <div className="form-group">
-                  <label htmlFor="endDate">End Date</label>
+                  <label htmlFor="endDate">Fecha de Fin</label>
                   <input
                     type="date"
                     id="endDate"
@@ -311,7 +322,7 @@ const Goals = () => {
               </div>
               
               <div className="form-group">
-                <label htmlFor="responsibleId">Responsible</label>
+                <label htmlFor="responsibleId">Responsable</label>
                 <select
                   id="responsibleId"
                   name="responsibleId"
@@ -319,7 +330,7 @@ const Goals = () => {
                   onChange={handleInputChange}
                   required
                 >
-                  <option value="">Select Responsible</option>
+                  <option value="">Seleccionar Responsable</option>
                   {users.map((user) => (
                     <option key={user.id} value={user.id}>{user.name}</option>
                   ))}
@@ -327,7 +338,7 @@ const Goals = () => {
               </div>
               
               <div className="form-group">
-                <label htmlFor="description">Description</label>
+                <label htmlFor="description">Descripción</label>
                 <textarea
                   id="description"
                   name="description"
@@ -338,8 +349,12 @@ const Goals = () => {
               </div>
               
               <div className="form-actions">
-                <button type="button" className="button secondary" onClick={closeModal}>Cancel</button>
-                <button type="submit" className="button primary">{currentGoal ? 'Update Goal' : 'Create Goal'}</button>
+                <button type="button" className="button secondary" onClick={closeModal}>
+                  <i className="fas fa-times"></i> Cancelar
+                </button>
+                <button type="submit" className="button primary">
+                  <i className="fas fa-save"></i> {currentGoal ? 'Actualizar Objetivo' : 'Crear Objetivo'}
+                </button>
               </div>
             </form>
           </div>
