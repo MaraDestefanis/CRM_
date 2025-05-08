@@ -420,12 +420,12 @@ const Tasks = () => {
         <div className="modal">
           <div className="modal-content">
             <div className="modal-header">
-              <h2>{currentTask ? 'Edit Task' : 'Create New Task'}</h2>
+              <h2>{currentTask ? 'Editar Tarea' : 'Crear Nueva Tarea'}</h2>
               <button className="close-button" onClick={closeModal}>&times;</button>
             </div>
             <form onSubmit={handleSubmit}>
               <div className="form-group">
-                <label htmlFor="title">Task Title</label>
+                <label htmlFor="title">Título de la Tarea</label>
                 <input
                   type="text"
                   id="title"
@@ -437,7 +437,7 @@ const Tasks = () => {
               </div>
               
               <div className="form-group">
-                <label htmlFor="description">Description</label>
+                <label htmlFor="description">Descripción</label>
                 <textarea
                   id="description"
                   name="description"
@@ -449,7 +449,7 @@ const Tasks = () => {
               
               <div className="form-row">
                 <div className="form-group">
-                  <label htmlFor="priority">Priority</label>
+                  <label htmlFor="priority">Prioridad</label>
                   <select
                     id="priority"
                     name="priority"
@@ -457,14 +457,14 @@ const Tasks = () => {
                     onChange={handleInputChange}
                     required
                   >
-                    <option value="low">Low</option>
-                    <option value="medium">Medium</option>
-                    <option value="high">High</option>
+                    <option value="low">Baja</option>
+                    <option value="medium">Media</option>
+                    <option value="high">Alta</option>
                   </select>
                 </div>
                 
                 <div className="form-group">
-                  <label htmlFor="dueDate">Due Date</label>
+                  <label htmlFor="dueDate">Fecha de Vencimiento</label>
                   <input
                     type="date"
                     id="dueDate"
@@ -476,7 +476,7 @@ const Tasks = () => {
                 </div>
                 
                 <div className="form-group">
-                  <label htmlFor="status">Status</label>
+                  <label htmlFor="status">Estado</label>
                   <select
                     id="status"
                     name="status"
@@ -484,16 +484,16 @@ const Tasks = () => {
                     onChange={handleInputChange}
                     required
                   >
-                    <option value="todo">To Do</option>
-                    <option value="in-progress">In Progress</option>
-                    <option value="done">Done</option>
+                    <option value="todo">Por Hacer</option>
+                    <option value="in-progress">En Progreso</option>
+                    <option value="done">Completada</option>
                   </select>
                 </div>
               </div>
               
               <div className="form-row">
                 <div className="form-group">
-                  <label htmlFor="assignedTo">Assigned To</label>
+                  <label htmlFor="assignedTo">Asignado a</label>
                   <select
                     id="assignedTo"
                     name="assignedTo"
@@ -501,7 +501,7 @@ const Tasks = () => {
                     onChange={handleInputChange}
                     required
                   >
-                    <option value="">Select User</option>
+                    <option value="">Seleccionar Usuario</option>
                     {users.map(user => (
                       <option key={user.id} value={user.id}>{user.name}</option>
                     ))}
@@ -509,14 +509,14 @@ const Tasks = () => {
                 </div>
                 
                 <div className="form-group">
-                  <label htmlFor="strategyId">Related Strategy</label>
+                  <label htmlFor="strategyId">Estrategia Relacionada</label>
                   <select
                     id="strategyId"
                     name="strategyId"
                     value={formData.strategyId}
                     onChange={handleInputChange}
                   >
-                    <option value="">No Strategy</option>
+                    <option value="">Sin Estrategia</option>
                     {strategies.map(strategy => (
                       <option key={strategy.id} value={strategy.id}>{strategy.name}</option>
                     ))}
@@ -524,27 +524,27 @@ const Tasks = () => {
                 </div>
                 
                 <div className="form-group">
-                  <label htmlFor="recurrence">Recurrence</label>
+                  <label htmlFor="recurrence">Recurrencia</label>
                   <select
                     id="recurrence"
                     name="recurrence"
                     value={formData.recurrence}
                     onChange={handleInputChange}
                   >
-                    <option value="none">None</option>
-                    <option value="daily">Daily</option>
-                    <option value="weekly">Weekly</option>
-                    <option value="monthly">Monthly</option>
-                    <option value="quarterly">Quarterly</option>
+                    <option value="none">Ninguna</option>
+                    <option value="daily">Diaria</option>
+                    <option value="weekly">Semanal</option>
+                    <option value="monthly">Mensual</option>
+                    <option value="quarterly">Trimestral</option>
                   </select>
                 </div>
               </div>
               
               <div className="form-group">
-                <label>Location (Optional)</label>
+                <label>Ubicación (Opcional)</label>
                 <div className="form-row">
                   <div className="form-group">
-                    <label htmlFor="lat">Latitude</label>
+                    <label htmlFor="lat">Latitud</label>
                     <input
                       type="text"
                       id="lat"
@@ -555,23 +555,23 @@ const Tasks = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label htmlFor="lng">Longitude</label>
+                    <label htmlFor="lng">Longitud</label>
                     <input
                       type="text"
                       id="lng"
                       name="lng"
                       value={formData.location.lng}
                       onChange={handleInputChange}
-                      placeholder="e.g. -74.0060"
+                      placeholder="ej. -74.0060"
                     />
                   </div>
                 </div>
               </div>
               
               <div className="form-actions">
-                <button type="button" className="button secondary" onClick={closeModal}>Cancel</button>
+                <button type="button" className="button secondary" onClick={closeModal}>Cancelar</button>
                 <button type="submit" className="button primary">
-                  {currentTask ? 'Update Task' : 'Create Task'}
+                  {currentTask ? 'Actualizar Tarea' : 'Crear Tarea'}
                 </button>
               </div>
             </form>
@@ -584,12 +584,12 @@ const Tasks = () => {
         <div className="modal">
           <div className="modal-content">
             <div className="modal-header">
-              <h2>Comments for: {currentTask.title}</h2>
+              <h2>Comentarios para: {currentTask.title}</h2>
               <button className="close-button" onClick={closeCommentModal}>&times;</button>
             </div>
             <div className="comments-container">
               {comments.length === 0 ? (
-                <p>No comments yet.</p>
+                <p>No hay comentarios aún.</p>
               ) : (
                 <div className="comments-list">
                   {comments.map(comment => (
@@ -605,7 +605,7 @@ const Tasks = () => {
               )}
               <form onSubmit={handleAddComment} className="comment-form">
                 <div className="form-group">
-                  <label htmlFor="commentText">Add Comment</label>
+                  <label htmlFor="commentText">Agregar Comentario</label>
                   <textarea
                     id="commentText"
                     value={commentText}
@@ -614,7 +614,7 @@ const Tasks = () => {
                     required
                   />
                 </div>
-                <button type="submit" className="button primary">Add Comment</button>
+                <button type="submit" className="button primary">Agregar Comentario</button>
               </form>
             </div>
           </div>
