@@ -1,0 +1,28 @@
+.main-content {
+  background-color: #f0f0f0; /* Light gray */
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  border-radius: 8px;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.content-wrapper {
+  display: flex;
+  height: calc(100vh - 64px);
+}
+
+.page-title {
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.card {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
