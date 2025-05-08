@@ -433,7 +433,7 @@ const Analysis = () => {
         <div className="modal">
           <div className="modal-content">
             <div className="modal-header">
-              <h2>Configure Columns</h2>
+              <h2>Configurar Columnas</h2>
               <button className="close-button" onClick={() => setShowColumnModal(false)}>&times;</button>
             </div>
             <div className="column-options">
@@ -444,7 +444,7 @@ const Analysis = () => {
                   checked={visibleColumns.includes('client')} 
                   onChange={() => handleColumnToggle('client')}
                 />
-                <label htmlFor="col-client">Client</label>
+                <label htmlFor="col-client">Cliente</label>
               </div>
               <div className="column-option">
                 <input 
@@ -524,7 +524,7 @@ const Analysis = () => {
         <div className="modal">
           <div className="modal-content">
             <div className="modal-header">
-              <h2>Add Filter</h2>
+              <h2>Añadir Filtro</h2>
               <button className="close-button" onClick={() => setShowFilterModal(false)}>&times;</button>
             </div>
             <form onSubmit={(e) => {
@@ -535,34 +535,34 @@ const Analysis = () => {
               handleAddFilter({ column, operator, value });
             }}>
               <div className="form-group">
-                <label htmlFor="column">Column</label>
+                <label htmlFor="column">Columna</label>
                 <select id="column" name="column" required>
-                  <option value="client">Client</option>
+                  <option value="client">Cliente</option>
                   <option value="i1">I1</option>
                   <option value="i2">I2</option>
                   <option value="i3">I3</option>
                   <option value="i4">I4</option>
-                  <option value="abcClass">ABC Class</option>
-                  <option value="category">Category</option>
-                  <option value="reason">Reason</option>
+                  <option value="abcClass">Clase ABC</option>
+                  <option value="category">Categoría</option>
+                  <option value="reason">Razón</option>
                 </select>
               </div>
               <div className="form-group">
-                <label htmlFor="operator">Operator</label>
+                <label htmlFor="operator">Operador</label>
                 <select id="operator" name="operator" required>
-                  <option value="equals">Equals</option>
-                  <option value="contains">Contains</option>
-                  <option value="greaterThan">Greater Than</option>
-                  <option value="lessThan">Less Than</option>
+                  <option value="equals">Igual a</option>
+                  <option value="contains">Contiene</option>
+                  <option value="greaterThan">Mayor que</option>
+                  <option value="lessThan">Menor que</option>
                 </select>
               </div>
               <div className="form-group">
-                <label htmlFor="value">Value</label>
+                <label htmlFor="value">Valor</label>
                 <input type="text" id="value" name="value" required />
               </div>
               <div className="form-actions">
-                <button type="button" className="button secondary" onClick={() => setShowFilterModal(false)}>Cancel</button>
-                <button type="submit" className="button primary">Add Filter</button>
+                <button type="button" className="button secondary" onClick={() => setShowFilterModal(false)}>Cancelar</button>
+                <button type="submit" className="button primary">Añadir Filtro</button>
               </div>
             </form>
           </div>
@@ -574,7 +574,7 @@ const Analysis = () => {
         <div className="modal">
           <div className="modal-content">
             <div className="modal-header">
-              <h2>Edit Client Category</h2>
+              <h2>Editar Categoría de Cliente</h2>
               <button className="close-button" onClick={() => {
                 setShowCategoryModal(false);
                 setEditingClient(null);
@@ -590,7 +590,7 @@ const Analysis = () => {
                 <h3>{editingClient.name}</h3>
               </div>
               <div className="form-group">
-                <label htmlFor="category">Category</label>
+                <label htmlFor="category">Categoría</label>
                 <select 
                   id="category" 
                   name="category" 
@@ -603,7 +603,7 @@ const Analysis = () => {
                 </select>
               </div>
               <div className="form-group">
-                <label htmlFor="reason">Reason</label>
+                <label htmlFor="reason">Razón</label>
                 <select 
                   id="reason" 
                   name="reason" 
@@ -612,15 +612,15 @@ const Analysis = () => {
                 >
                   {reasons[editingClient.category]?.map((reason, index) => (
                     <option key={index} value={reason}>{reason}</option>
-                  )) || <option value="">Select a category first</option>}
+                  )) || <option value="">Seleccione una categoría primero</option>}
                 </select>
               </div>
               <div className="form-actions">
                 <button type="button" className="button secondary" onClick={() => {
                   setShowCategoryModal(false);
                   setEditingClient(null);
-                }}>Cancel</button>
-                <button type="submit" className="button primary">Save Changes</button>
+                }}>Cancelar</button>
+                <button type="submit" className="button primary">Guardar Cambios</button>
               </div>
             </form>
           </div>
