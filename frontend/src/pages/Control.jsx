@@ -110,9 +110,9 @@ const Control = () => {
       if (progress < 70 && getDaysRemaining() < 15) {
         newAlerts.push({
           type: 'warning',
-          title: 'Underperforming Goal',
-          message: `${goal.variable} - ${goal.productFamily} is at ${Math.round(progress)}% of target with ${getDaysRemaining()} days remaining.`,
-          action: 'View Details',
+          title: 'Objetivo con Bajo Rendimiento',
+          message: `${goal.variable} - ${goal.productFamily} está al ${Math.round(progress)}% de la meta con ${getDaysRemaining()} días restantes.`,
+          action: 'Ver Detalles',
           link: `/goals?id=${goal.id}`
         });
       }
@@ -137,9 +137,9 @@ const Control = () => {
         if (strategy) {
           newAlerts.push({
             type: 'danger',
-            title: 'Overdue Tasks',
-            message: `${count} task${count > 1 ? 's are' : ' is'} overdue for the ${strategy.name} strategy.`,
-            action: 'View Tasks',
+            title: 'Tareas Vencidas',
+            message: `${count} tarea${count > 1 ? 's están' : ' está'} vencida${count > 1 ? 's' : ''} para la estrategia ${strategy.name}.`,
+            action: 'Ver Tareas',
             link: `/tasks?strategyId=${strategyId}`
           });
         }
@@ -151,9 +151,9 @@ const Control = () => {
       if (strategyTasks.length === 0) {
         newAlerts.push({
           type: 'info',
-          title: 'Strategy Without Tasks',
-          message: `${strategy.name} strategy has no associated tasks.`,
-          action: 'Add Tasks',
+          title: 'Estrategia Sin Tareas',
+          message: `La estrategia ${strategy.name} no tiene tareas asociadas.`,
+          action: 'Añadir Tareas',
           link: `/tasks?strategyId=${strategy.id}`
         });
       }
@@ -277,9 +277,9 @@ const Control = () => {
   };
 
   const getGoalStatusText = (progress) => {
-    if (progress >= 90) return 'On Track';
-    if (progress >= 70) return 'Needs Attention';
-    return 'At Risk';
+    if (progress >= 90) return 'En Camino';
+    if (progress >= 70) return 'Necesita Atención';
+    return 'En Riesgo';
   };
 
   const calculateStrategyImpact = (strategy) => {
@@ -301,25 +301,25 @@ const Control = () => {
   return (
     <div className="control-page">
       <div className="page-header">
-        <h1>Control &amp; Results</h1>
+        <h1>Control y Resultados</h1>
         <div className="period-selector">
-          <label htmlFor="period">Time Period:</label>
+          <label htmlFor="period">Período de Tiempo:</label>
           <select 
             id="period" 
             value={selectedPeriod} 
             onChange={handlePeriodChange}
           >
-            <option value="month">Current Month</option>
-            <option value="quarter">Current Quarter</option>
-            <option value="year">Current Year</option>
-            <option value="custom">Custom Range</option>
+            <option value="month">Mes Actual</option>
+            <option value="quarter">Trimestre Actual</option>
+            <option value="year">Año Actual</option>
+            <option value="custom">Rango Personalizado</option>
           </select>
           
           {showCustomDatePicker && (
             <div className="custom-date-picker">
               <div className="date-inputs">
                 <div className="form-group">
-                  <label htmlFor="startDate">Start Date:</label>
+                  <label htmlFor="startDate">Fecha de Inicio:</label>
                   <input
                     type="date"
                     id="startDate"
@@ -330,7 +330,7 @@ const Control = () => {
                   />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="endDate">End Date:</label>
+                  <label htmlFor="endDate">Fecha de Fin:</label>
                   <input
                     type="date"
                     id="endDate"
@@ -346,7 +346,7 @@ const Control = () => {
                 onClick={handleApplyCustomRange}
                 disabled={!customDateRange.startDate || !customDateRange.endDate}
               >
-                Apply
+                Aplicar
               </button>
             </div>
           )}
@@ -356,45 +356,45 @@ const Control = () => {
       {error && <div className="error-message">{error}</div>}
       
       {loading ? (
-        <div className="loading">Loading control data...</div>
+        <div className="loading">Cargando datos de control...</div>
       ) : (
         <>
           <div className="global-kpis">
-            <h2>Global KPIs</h2>
+            <h2>KPIs Globales</h2>
             <div className="kpi-cards">
               <div className="kpi-card">
-                <h3>Goal Completion</h3>
+                <h3>Cumplimiento de Objetivos</h3>
                 <p className="kpi-value">{globalKPIs.goalCompletion}%</p>
               </div>
               <div className="kpi-card">
-                <h3>Client Retention</h3>
+                <h3>Retención de Clientes</h3>
                 <p className="kpi-value">{globalKPIs.clientRetention}%</p>
               </div>
               <div className="kpi-card">
-                <h3>New Clients</h3>
+                <h3>Nuevos Clientes</h3>
                 <p className="kpi-value">{globalKPIs.newClients}</p>
               </div>
               <div className="kpi-card">
-                <h3>Total Sales</h3>
+                <h3>Ventas Totales</h3>
                 <p className="kpi-value">{formatCurrency(globalKPIs.totalSales)}</p>
               </div>
             </div>
           </div>
           
           <div className="goal-progress">
-            <h2>Goal Progress</h2>
+            <h2>Progreso de Objetivos</h2>
             {goals.length === 0 ? (
-              <p>No goals found. Create goals to track progress.</p>
+              <p>No se encontraron objetivos. Cree objetivos para seguir el progreso.</p>
             ) : (
               <table className="goal-progress-table">
                 <thead>
                   <tr>
-                    <th>Goal</th>
+                    <th>Objetivo</th>
                     <th>Variable</th>
-                    <th>Target</th>
-                    <th>Current</th>
-                    <th>Progress</th>
-                    <th>Status</th>
+                    <th>Meta</th>
+                    <th>Actual</th>
+                    <th>Progreso</th>
+                    <th>Estado</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -429,18 +429,18 @@ const Control = () => {
           </div>
           
           <div className="strategy-impact">
-            <h2>Strategy Impact</h2>
+            <h2>Impacto de Estrategias</h2>
             {strategies.length === 0 ? (
-              <p>No strategies found. Create strategies to track their impact.</p>
+              <p>No se encontraron estrategias. Cree estrategias para seguir su impacto.</p>
             ) : (
               <table className="strategy-impact-table">
                 <thead>
                   <tr>
-                    <th>Strategy</th>
-                    <th>Linked Goal</th>
-                    <th>Task Completion</th>
-                    <th>Impact (ROI)</th>
-                    <th>Status</th>
+                    <th>Estrategia</th>
+                    <th>Objetivo Vinculado</th>
+                    <th>Completado de Tareas</th>
+                    <th>Impacto (ROI)</th>
+                    <th>Estado</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -452,14 +452,14 @@ const Control = () => {
                     return (
                       <tr key={strategy.id}>
                         <td>{strategy.name}</td>
-                        <td>{goal ? `${goal.variable} - ${goal.productFamily}` : 'No Goal Linked'}</td>
+                        <td>{goal ? `${goal.variable} - ${goal.productFamily}` : 'Sin Objetivo Vinculado'}</td>
                         <td>{taskCompletion}%</td>
                         <td className={impact >= 0 ? 'positive' : 'negative'}>
                           {impact >= 0 ? '+' : ''}{impact}%
                         </td>
                         <td>
                           <span className={`status ${impact >= 0 ? 'positive' : 'negative'}`}>
-                            {impact >= 0 ? 'Positive' : 'Negative'}
+                            {impact >= 0 ? 'Positivo' : 'Negativo'}
                           </span>
                         </td>
                       </tr>
@@ -471,9 +471,9 @@ const Control = () => {
           </div>
           
           <div className="alerts-section">
-            <h2>Alerts</h2>
+            <h2>Alertas</h2>
             {alerts.length === 0 ? (
-              <p>No alerts at this time.</p>
+              <p>No hay alertas en este momento.</p>
             ) : (
               <div className="alerts-list">
                 {alerts.map((alert, index) => (
